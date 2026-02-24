@@ -284,6 +284,14 @@
         }
 
         /* ===== PANEL IMAGE PLACEHOLDER ===== */
+        .panel-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: inherit;
+        }
+
         .panel-image {
             width: 100%;
             aspect-ratio: 16 / 10;
@@ -677,15 +685,15 @@
     <p class="hero-subtitle">Сказка-комикс в шести главах</p>
     <div class="hero-characters">
         <div class="hero-character">
-            <img class="hero-character-photo" src="sources/чепчик.webp" alt="Чепчик">
+            <img class="hero-character-photo" src="generated/чепчик.png" alt="Чепчик">
             <span class="hero-character-name">Чепчик</span>
         </div>
         <div class="hero-character">
-            <img class="hero-character-photo" src="sources/ева.webp" alt="Ева">
+            <img class="hero-character-photo" src="generated/ева.png" alt="Ева">
             <span class="hero-character-name">Ева</span>
         </div>
         <div class="hero-character">
-            <img class="hero-character-photo" src="sources/кряша.webp" alt="Кряша">
+            <img class="hero-character-photo" src="generated/кряша.png" alt="Кряша">
             <span class="hero-character-name">Кряша</span>
         </div>
     </div>
@@ -706,11 +714,8 @@
 
         <div class="panel">
             <div class="panel-image">
-                <div class="image-prompt">
-                    <strong>AI Prompt</strong>
-                    Soft pastel watercolor, a cute round "sad hamster meme" plush toy with huge dark sad eyes with white reflections, grey-beige fur, blob-like round shape sitting on a window sill, old Yerevan street with pink tuff stone buildings, Mount Ararat in the background, warm golden hour light, pomegranate tree nearby, Pixar style children's book illustration, no text
-                </div>
-            </div>
+            <img src="images/ch1-erevan/p1-panel1.png" alt="ch1 erevan p1 panel1" loading="lazy">
+        </div>
             <div class="caption">
                 В одном розовом городе, у подножия большой горы, жил хомяк по имени Чепчик. Он был грустным. Не потому что случилось что-то плохое — просто у него такая мордочка.
             </div>
@@ -718,11 +723,8 @@
 
         <div class="panel">
             <div class="panel-image">
-                <div class="image-prompt">
-                    <strong>AI Prompt</strong>
-                    Soft pastel watercolor, a cute small grey plush hamster girl with oversized black eyes and a fluffy pink bow walking with a tiny basket of pomegranates, a grey-beige "sad hamster meme" plush hamster watching her with heart-eyes from a window, old Yerevan street, warm sunset, Pixar style children's book illustration, no text
-                </div>
-            </div>
+            <img src="images/ch1-erevan/p1-panel2.png" alt="ch1 erevan p1 panel2" loading="lazy">
+        </div>
             <div class="caption">
                 Но однажды мимо прошла Ева, и мордочка стала ещё грустнее. Потому что она была такая красивая, что у Чепчика заболело сердце.
             </div>
@@ -730,11 +732,8 @@
 
         <div class="panel">
             <div class="panel-image">
-                <div class="image-prompt">
-                    <strong>AI Prompt</strong>
-                    Soft pastel watercolor, a small cute white duck sitting calmly in a city fountain, Yerevan Republic Square in the background, philosophical expression, water splashing softly, Pixar style children's book illustration, no text
-                </div>
-            </div>
+            <img src="images/ch1-erevan/p1-panel3.png" alt="ch1 erevan p1 panel3" loading="lazy">
+        </div>
             <div class="caption">
                 А в городском фонтане жила уточка Кряша, которая считала, что любой фонтан — это маленькое море.
             </div>
@@ -1645,11 +1644,11 @@
         const bubble = row.querySelector('.speech-bubble');
         if (!avatar || !bubble) return;
 
-        let src = 'sources/чепчик.webp'; // default: Chepchik
+        let src = 'generated/чепчик.png'; // default: Chepchik
         if (bubble.classList.contains('eva')) {
-            src = 'sources/ева.webp';
+            src = 'generated/ева.png';
         } else if (bubble.classList.contains('kryasha')) {
-            src = 'sources/кряша.webp';
+            src = 'generated/кряша.png';
         }
         avatar.innerHTML = '<img src="' + src + '" alt="">';
     });
