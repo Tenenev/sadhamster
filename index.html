@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Большое путешествие Чепчика, Евы и Кряши</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            color: #4a3728;
+            background: #FFF8F0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e8a0b4, #f2d4d7, #e8a0b4);
+            z-index: 1000;
+            transition: width 0.1s linear;
+            border-radius: 0 2px 2px 0;
+        }
+
+        /* ===== CHAPTER NAV ===== */
+        .chapter-nav {
+            position: fixed;
+            top: 4px;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            background: rgba(255, 248, 240, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(232, 160, 180, 0.2);
+            padding: 8px 0;
+            transition: transform 0.3s ease;
+        }
+
+        .chapter-nav.hidden {
+            transform: translateY(-100%);
+        }
+
+        .nav-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            padding: 0 16px;
+            flex-wrap: wrap;
+        }
+
+        .nav-dot {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(242, 212, 215, 0.3);
+            border: none;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #8b6f60;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-dot:hover {
+            background: rgba(242, 212, 215, 0.6);
+            transform: scale(1.05);
+        }
+
+        .nav-dot.active {
+            background: #e8a0b4;
+            color: white;
+        }
+
+        .nav-dot-icon {
+            font-size: 1rem;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 24px 60px;
+            background: linear-gradient(180deg, #f2d4d7 0%, #FFF8F0 100%);
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(transparent, #FFF8F0);
+        }
+
+        .hero-emoji {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .hero h1 {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(2.5rem, 7vw, 4.5rem);
+            font-weight: 700;
+            color: #6b4c3b;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+
+        .hero-subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: #a07060;
+            margin-bottom: 30px;
+        }
+
+        .hero-characters {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .hero-character {
+            text-align: center;
+        }
+
+        .hero-character-emoji {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .hero-character-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(107, 76, 59, 0.15);
+            margin-bottom: 8px;
+        }
+
+        .hero-character-name {
+            font-family: 'Caveat', cursive;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #6b4c3b;
+        }
+
+        .scroll-hint {
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            color: #b08878;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* ===== CHAPTER ===== */
+        .chapter {
+            padding: 0 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* ===== CHAPTER COVER ===== */
+        .chapter-cover {
+            padding: 80px 24px;
+            text-align: center;
+            position: relative;
+            margin: 40px -16px;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .chapter-cover-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.15;
+            background-size: cover;
+            background-position: center;
+            border-radius: 24px;
+        }
+
+        /* Chapter-specific colors */
+        #erevan .chapter-cover { background: linear-gradient(135deg, #f5e6d3, #e8c4a8); }
+        #la .chapter-cover { background: linear-gradient(135deg, #fde8c8, #f5d0a0); }
+        #miami .chapter-cover { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+        #cruise .chapter-cover { background: linear-gradient(135deg, #e0f0ff, #b3d9f7); }
+        #siberia .chapter-cover { background: linear-gradient(135deg, #e8edf2, #c5d5e5); }
+        #texas .chapter-cover { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
+
+        .chapter-number {
+            font-family: 'Caveat', cursive;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #8b6f60;
+            margin-bottom: 8px;
+        }
+
+        .chapter-title {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            color: #5a3e2e;
+            margin-bottom: 8px;
+        }
+
+        .chapter-subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            color: #8b6f60;
+            font-style: italic;
+        }
+
+        /* ===== PAGE ===== */
+        .page {
+            margin-bottom: 40px;
+        }
+
+        .page-label {
+            font-family: 'Caveat', cursive;
+            font-size: 0.9rem;
+            color: #b08878;
+            text-align: center;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        /* ===== PANEL ===== */
+        .panel {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(107, 76, 59, 0.08);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .panel.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== PANEL IMAGE PLACEHOLDER ===== */
+        .panel-image {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            background: linear-gradient(135deg, #f5e6d3, #f2d4d7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-image.wide {
+            aspect-ratio: 21 / 9;
+        }
+
+        .panel-image.square {
+            aspect-ratio: 1 / 1;
+        }
+
+        .panel-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(255,255,255,0.1) 20px,
+                rgba(255,255,255,0.1) 40px
+            );
+        }
+
+        .image-prompt {
+            position: relative;
+            z-index: 1;
+            font-size: 0.8rem;
+            color: #8b6f60;
+            text-align: center;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            max-width: 90%;
+            line-height: 1.4;
+            backdrop-filter: blur(5px);
+        }
+
+        .image-prompt strong {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            color: #e8a0b4;
+        }
+
+        /* ===== PANEL TEXT ===== */
+        .panel-body {
+            padding: 20px 24px;
+        }
+
+        /* ===== CAPTION (narrator) ===== */
+        .caption {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #5a3e2e;
+            font-style: italic;
+            padding: 16px 24px;
+            text-align: center;
+        }
+
+        .caption-standalone {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #5a3e2e;
+            font-style: italic;
+            padding: 24px;
+            text-align: center;
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(107, 76, 59, 0.08);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .caption-standalone.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== SPEECH BUBBLES ===== */
+        .speech-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: flex-start;
+        }
+
+        .speech-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .speech-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid #f5e6d3;
+        }
+
+        .speech-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .speech-avatar.avatar-eva {
+            border-color: #fce4ec;
+        }
+
+        .speech-avatar.avatar-kryasha {
+            border-color: #e3f2fd;
+        }
+
+        .speech-bubble {
+            position: relative;
+            background: #f5f0eb;
+            border-radius: 16px 16px 16px 4px;
+            padding: 10px 16px;
+            font-size: 0.95rem;
+            max-width: 80%;
+            line-height: 1.5;
+        }
+
+        .speech-bubble.eva {
+            background: #fce4ec;
+            margin-left: auto;
+            border-radius: 16px 16px 4px 16px;
+        }
+
+        .speech-bubble.kryasha {
+            background: #e3f2fd;
+        }
+
+        .speech-name {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #8b6f60;
+            margin-bottom: 2px;
+        }
+
+        /* ===== FULL-WIDTH PANEL ===== */
+        .panel-full {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(107, 76, 59, 0.08);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .panel-full.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== DRAMATIC PANEL ===== */
+        .panel-dramatic {
+            background: #3a2820;
+            color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 30px rgba(58, 40, 32, 0.2);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .panel-dramatic.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .panel-dramatic .caption {
+            color: #e8d4c8;
+        }
+
+        .panel-dramatic .panel-image {
+            background: linear-gradient(135deg, #4a3828, #2a1810);
+        }
+
+        /* ===== JOY PANEL ===== */
+        .panel-joy {
+            background: linear-gradient(135deg, #fff9c4, #fff176);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 30px rgba(255, 241, 118, 0.3);
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .panel-joy.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .panel-joy .caption {
+            color: #5a3e2e;
+            font-weight: 600;
+        }
+
+        /* ===== FINALE ===== */
+        .finale {
+            text-align: center;
+            padding: 80px 24px 120px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .finale-album {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .finale-photo {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #f5e6d3, #f2d4d7);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #8b6f60;
+            padding: 8px;
+            text-align: center;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.08);
+            transform: rotate(var(--rotate, 0deg));
+            transition: transform 0.3s ease;
+        }
+
+        .finale-photo:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+
+        .finale-photo.center {
+            grid-column: 1 / -1;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .finale-message {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
+            color: #5a3e2e;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .finale-dedication {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(1.6rem, 5vw, 2.2rem);
+            font-weight: 700;
+            color: #e8a0b4;
+            line-height: 1.4;
+        }
+
+        .finale-hearts {
+            font-size: 2rem;
+            margin-top: 20px;
+        }
+
+        /* ===== SIBERIA SPECIAL STYLES ===== */
+        #siberia {
+            position: relative;
+        }
+
+        #siberia .chapter-cover {
+            background: linear-gradient(135deg, #e8edf2, #c5d5e5);
+        }
+
+        #siberia .panel-image {
+            background: linear-gradient(135deg, #e8edf2, #d5dfe8);
+        }
+
+        /* ===== SECTION DIVIDERS ===== */
+        .chapter-divider {
+            text-align: center;
+            padding: 40px 0;
+            font-size: 1.5rem;
+            color: #d4b8a0;
+            letter-spacing: 8px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 40px 24px;
+            font-size: 0.8rem;
+            color: #b08878;
+            font-family: 'Caveat', cursive;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .chapter-cover {
+                padding: 60px 16px;
+                margin: 20px -16px;
+            }
+
+            .panel-body {
+                padding: 16px;
+            }
+
+            .caption {
+                padding: 12px 16px;
+                font-size: 1.1rem;
+            }
+
+            .nav-dot {
+                padding: 4px 8px;
+                font-size: 0.7rem;
+            }
+
+            .nav-dot-icon {
+                font-size: 0.85rem;
+            }
+
+            .hero-characters {
+                gap: 16px;
+            }
+
+            .finale-album {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .finale-photo.center {
+                grid-column: 1 / -1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Chapter Navigation -->
+<nav class="chapter-nav" id="chapterNav">
+    <div class="nav-inner">
+        <a href="#erevan" class="nav-dot active" data-chapter="erevan">
+            <span class="nav-dot-icon">&#127960;</span> Ереван
+        </a>
+        <a href="#la" class="nav-dot" data-chapter="la">
+            <span class="nav-dot-icon">&#127796;</span> LA
+        </a>
+        <a href="#miami" class="nav-dot" data-chapter="miami">
+            <span class="nav-dot-icon">&#127965;</span> Майами
+        </a>
+        <a href="#cruise" class="nav-dot" data-chapter="cruise">
+            <span class="nav-dot-icon">&#128674;</span> Круиз
+        </a>
+        <a href="#siberia" class="nav-dot" data-chapter="siberia">
+            <span class="nav-dot-icon">&#10052;&#65039;</span> Сибирь
+        </a>
+        <a href="#texas" class="nav-dot" data-chapter="texas">
+            <span class="nav-dot-icon">&#127969;</span> Техас
+        </a>
+    </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="top">
+    <div class="hero-emoji">&#128214;</div>
+    <h1>Большое путешествие<br>Чепчика, Евы и Кряши</h1>
+    <p class="hero-subtitle">Сказка-комикс в шести главах</p>
+    <div class="hero-characters">
+        <div class="hero-character">
+            <img class="hero-character-photo" src="sources/чепчик.webp" alt="Чепчик">
+            <span class="hero-character-name">Чепчик</span>
+        </div>
+        <div class="hero-character">
+            <img class="hero-character-photo" src="sources/ева.webp" alt="Ева">
+            <span class="hero-character-name">Ева</span>
+        </div>
+        <div class="hero-character">
+            <img class="hero-character-photo" src="sources/кряша.webp" alt="Кряша">
+            <span class="hero-character-name">Кряша</span>
+        </div>
+    </div>
+    <p class="scroll-hint">&#8595; Листай вниз, чтобы начать &#8595;</p>
+</section>
+
+<!-- ==================== ГЛАВА 1: ЕРЕВАН ==================== -->
+<section class="chapter" id="erevan">
+    <div class="chapter-cover">
+        <div class="chapter-number">Глава первая</div>
+        <div class="chapter-title">Ереван</div>
+        <div class="chapter-subtitle">&#171;Там, где всё началось&#187;</div>
+    </div>
+
+    <!-- Стр. 1 — Знакомство -->
+    <div class="page">
+        <div class="page-label">~ страница 1 ~</div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, a cute round "sad hamster meme" plush toy with huge dark sad eyes with white reflections, grey-beige fur, blob-like round shape sitting on a window sill, old Yerevan street with pink tuff stone buildings, Mount Ararat in the background, warm golden hour light, pomegranate tree nearby, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                В одном розовом городе, у подножия большой горы, жил хомяк по имени Чепчик. Он был грустным. Не потому что случилось что-то плохое — просто у него такая мордочка.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, a cute small grey plush hamster girl with oversized black eyes and a fluffy pink bow walking with a tiny basket of pomegranates, a grey-beige "sad hamster meme" plush hamster watching her with heart-eyes from a window, old Yerevan street, warm sunset, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Но однажды мимо прошла Ева, и мордочка стала ещё грустнее. Потому что она была такая красивая, что у Чепчика заболело сердце.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, a small cute white duck sitting calmly in a city fountain, Yerevan Republic Square in the background, philosophical expression, water splashing softly, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                А в городском фонтане жила уточка Кряша, которая считала, что любой фонтан — это маленькое море.
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 2 — Сборы -->
+    <div class="page">
+        <div class="page-label">~ страница 2 ~</div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, three cute animals together — a grey-beige "sad hamster meme" plush hamster, a small grey plush hamster with big black eyes and pink bow, and a small white domestic duck with orange beak — standing together on an old Yerevan street, looking friendly and happy, warm light, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Они подружились. А потом Чепчик сказал: &laquo;Мне кажется, за горой есть что-то очень большое. Может, поедем посмотрим?&raquo;
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-body">
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble eva">
+                        <div class="speech-name">Ева</div>
+                        Ну... если там есть хорошие магазины.
+                    </div>
+                </div>
+                <div class="speech-row">
+                    <div class="speech-avatar">&#129414;</div>
+                    <div class="speech-bubble kryasha">
+                        <div class="speech-name">Кряша</div>
+                        Кря.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, three tiny cute animals — a grey-beige "sad hamster meme" plush hamster sitting on top of an enormous suitcase trying to close it, a small grey plush hamster with big black eyes and pink bow and a small white domestic duck with orange beak watching, comical scene, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Сборы заняли примерно вечность.
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 3 — Прощание -->
+    <div class="page">
+        <div class="page-label">~ страница 3 ~</div>
+
+        <div class="panel-full">
+            <div class="panel-image wide">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, panoramic view, three tiny silhouettes of a sad hamster plush toy, a small grey hamster with pink bow, and a white duck walking away on a road with a huge suitcase, Mount Ararat at sunset in the background, golden and pink sky, emotional farewell scene, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                И они отправились в путь. Чепчик плакал, но это нормально — он плачет даже когда счастлив.
+            </div>
+        </div>
+    </div>
+
+    <div class="chapter-divider">&#183; &#183; &#183;</div>
+</section>
+
+<!-- ==================== ГЛАВА 2: ЛОС-АНДЖЕЛЕС ==================== -->
+<section class="chapter" id="la">
+    <div class="chapter-cover">
+        <div class="chapter-number">Глава вторая</div>
+        <div class="chapter-title">Лос-Анджелес</div>
+        <div class="chapter-subtitle">&#171;Город ангелов и пробок&#187;</div>
+    </div>
+
+    <!-- Стр. 4 — Прибытие -->
+    <div class="page">
+        <div class="page-label">~ страница 4 ~</div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, inside an airplane — a scared grey-beige "sad hamster meme" plush hamster gripping armrests with wide eyes, a calm small grey plush hamster with big black eyes and pink bow reading a magazine, a small white domestic duck with orange beak pressed against the window looking excited, funny and cute scene, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble">
+                        <div class="speech-name">Чепчик</div>
+                        Мы все умрём...
+                    </div>
+                </div>
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble eva">
+                        <div class="speech-name">Ева</div>
+                        Нет.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, the Hollywood sign on hills but letters spell "HAMSTERWOOD", three tiny cute animals — a hamster, a small grey plush hamster with big black eyes and pink bow, and a duck — standing below with a suitcase looking up, palm trees, sunny LA vibes, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Лос-Анджелес встретил их солнцем, пальмами и ощущением, что здесь все куда-то опаздывают.
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 5 — Жизнь в LA -->
+    <div class="page">
+        <div class="page-label">~ страница 5 ~</div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, a cute grey-beige "sad hamster meme" plush hamster with sad eyes driving a big car stuck in LA highway traffic, surrounded by other cars, frustrated but adorable expression, sunny California, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Чепчик быстро понял главный закон Лос-Анджелеса: ты либо в пробке, либо собираешься в неё попасть.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, Santa Monica beach — a cute small grey plush hamster with oversized black eyes and a fluffy pink bow on head wearing sunglasses posing stylishly on the beach, a small white domestic duck with orange beak happily swimming in the ocean waves, sunny warm vibes, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Ева чувствовала себя как дома. Кряша нашла самый большой фонтан в своей жизни — океан.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, Hollywood Walk of Fame at evening, a cute grey-beige "sad hamster meme" plush hamster stepping on a star on the sidewalk, dreamy expression, city lights, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                &laquo;Может, когда-нибудь здесь будет звезда грустного хомяка,&raquo; — мечтательно сказал Чепчик.
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 6 — Тёплые моменты -->
+    <div class="page">
+        <div class="page-label">~ страница 6 ~</div>
+
+        <div class="panel">
+            <div class="panel-image wide">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, panoramic view, Griffith Observatory at sunset, three tiny animal silhouettes — two hamsters and a duck — looking at LA city lights below, the grey hamster with pink bow leaning on the sad hamster's shoulder, romantic and warm, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Иногда лучшее приключение — просто смотреть на огни города с тем, кого любишь.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, a cute grey-beige "sad hamster meme" plush hamster on one knee proposing to a small grey plush hamster with big black eyes and pink bow, holding a tiny ring made from a bagel, both have sad hamster faces but happy eyes, a small white domestic duck with orange beak nearby crying tears of joy, sweet romantic scene, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble">
+                        <div class="speech-name">Чепчик</div>
+                        Будешь моей хомячихой навсегда?
+                    </div>
+                </div>
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble eva">
+                        <div class="speech-name">Ева</div>
+                        Я уже твоя хомячиха, глупый.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 7 — Решение -->
+    <div class="page">
+        <div class="page-label">~ страница 7 ~</div>
+
+        <div class="panel">
+            <div class="panel-body">
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble">
+                        <div class="speech-name">Чепчик</div>
+                        А давайте туда, где потеплее?
+                    </div>
+                </div>
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble eva">
+                        <div class="speech-name">Ева</div>
+                        Теплее чем в LA?!
+                    </div>
+                </div>
+                <div class="speech-row">
+                    <div class="speech-avatar">&#129414;</div>
+                    <div class="speech-bubble kryasha">
+                        <div class="speech-name">Кряша</div>
+                        Кря. <span style="font-size: 0.8em; color: #999;">(одобрительное)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chapter-divider">&#183; &#183; &#183;</div>
+</section>
+
+<!-- ==================== ГЛАВА 3: МАЙАМИ ==================== -->
+<section class="chapter" id="miami">
+    <div class="chapter-cover">
+        <div class="chapter-number">Глава третья</div>
+        <div class="chapter-title">Майами</div>
+        <div class="chapter-subtitle">&#171;Где хомяки не потеют, а сияют&#187;</div>
+    </div>
+
+    <!-- Стр. 8 — Тропики -->
+    <div class="page">
+        <div class="page-label">~ страница 8 ~</div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, Miami Beach — a cute round grey-beige "sad hamster meme" plush hamster wearing a Hawaiian shirt and a little hat, melting from the heat, palm trees and bright sun, Art Deco buildings in pastel colors, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Майами оказался горячим. Во всех смыслах.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, a cute elegant small grey plush hamster with big black eyes and pink bow wearing a stylish swimsuit, posing in front of a pink Art Deco building in Miami, looking fabulous and confident, warm tropical light, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Ева, впрочем, была создана для Майами.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, a small white domestic duck with orange beak swimming in tropical water with tiny pink flamingos around, the duck looking confused at the flamingos, Miami vibes, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="speech-row">
+                    <div class="speech-avatar">&#129414;</div>
+                    <div class="speech-bubble kryasha">
+                        <div class="speech-name">Кряша</div>
+                        Почему птицы розовые и не умеют нормально плавать?
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 9 — Приключения -->
+    <div class="page">
+        <div class="page-label">~ страница 9 ~</div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, Everglades swamp — three cute animals in a small boat: a scared grey-beige "sad hamster meme" plush hamster hiding behind a small grey plush hamster with big black eyes and pink bow who looks calm, a small white domestic duck with orange beak looking curious, a friendly alligator popping out of the water smiling for a photo, funny scene, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble eva">
+                        <div class="speech-name">Ева</div>
+                        Он просто хочет сфоткаться.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, neon-lit Miami night street, three cute animals — a grey-beige "sad hamster meme" plush hamster, a small grey plush hamster with big black eyes and pink bow, and a white duck — sharing a huge ice cream sundae at an outdoor cafe, neon signs reflecting, warm happy scene, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                В Майами они поняли важную вещь: мороженое — это отдельный приём пищи.
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 10 — Идея круиза -->
+    <div class="page">
+        <div class="page-label">~ страница 10 ~</div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, Miami port — a huge white cruise ship, three tiny animals looking up at it in awe, the white duck has heart-eyes and looks lovestruck, the sad hamster looks nervous, the grey hamster with pink bow looks excited, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="speech-row">
+                    <div class="speech-avatar">&#129414;</div>
+                    <div class="speech-bubble kryasha">
+                        <div class="speech-name">Кряша</div>
+                        КРЯЯЯ!!!
+                    </div>
+                </div>
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble">
+                        <div class="speech-name">Чепчик</div>
+                        Но он же... большой?
+                    </div>
+                </div>
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble eva">
+                        <div class="speech-name">Ева</div>
+                        Именно.
+                    </div>
+                </div>
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble">
+                        <div class="speech-name">Чепчик</div>
+                        А если он утонет?
+                    </div>
+                </div>
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble eva">
+                        <div class="speech-name">Ева</div>
+                        Тогда Кряша нас спасёт.
+                    </div>
+                </div>
+                <div class="speech-row">
+                    <div class="speech-avatar">&#129414;</div>
+                    <div class="speech-bubble kryasha">
+                        <div class="speech-name">Кряша</div>
+                        Кря. <span style="font-size: 0.8em; color: #999;">(гордое)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chapter-divider">&#183; &#183; &#183;</div>
+</section>
+
+<!-- ==================== ГЛАВА 4: КРУИЗ ==================== -->
+<section class="chapter" id="cruise">
+    <div class="chapter-cover">
+        <div class="chapter-number">Глава четвёртая</div>
+        <div class="chapter-title">Круиз</div>
+        <div class="chapter-subtitle">&#171;Море волнуется раз&#187;</div>
+    </div>
+
+    <!-- Стр. 11 — На борту -->
+    <div class="page">
+        <div class="page-label">~ страница 11 ~</div>
+
+        <div class="panel">
+            <div class="panel-image wide">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, panoramic view, a huge white cruise ship on a blue ocean, three tiny cute animal figures — sad hamster plush, grey hamster with pink bow, and white duck — on the deck railing looking out, scale contrast between huge ship and tiny animals, bright sunny day, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Лайнер был размером примерно в миллион хомяков.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, a cruise ship cabin — a grey-beige "sad hamster meme" plush hamster jumping on the bed, a small grey plush hamster with big black eyes and pink bow unpacking a suitcase full of bows and accessories, a small white domestic duck with orange beak already swimming happily in the bathroom sink, funny and cozy scene, Pixar style children's book illustration, no text
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, a fancy captain's dinner on a cruise ship — a grey-beige "sad hamster meme" plush hamster in a tiny tuxedo, a small grey plush hamster with big black eyes and pink bow in an elegant evening dress, a small white domestic duck with orange beak wearing only a bow tie looking very proud, elegant table setting with candles, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Кряша считала, что бабочка делает её неотразимой. Она была права.
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 12 — Морские приключения -->
+    <div class="page">
+        <div class="page-label">~ страница 12 ~</div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, dawn at sea — a grey-beige "sad hamster meme" plush hamster and grey hamster with pink bow standing on the bow of a cruise ship in the iconic Titanic pose, a small white domestic duck with orange beak taking their photo, pink sunrise over the ocean, romantic and funny, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Обязательный кадр.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, storm at sea — a cruise ship rocking in waves, a green-faced seasick "sad hamster meme" plush hamster clinging to the railing, a small grey plush hamster with big black eyes and pink bow holding him, and a small white domestic duck with orange beak surfing on a wave outside looking absolutely happy, dramatic yet funny contrast, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Кряша наконец нашла свою стихию. Буквально.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, calm night after a storm on a cruise ship deck, three cute animals — a grey-beige "sad hamster meme" plush hamster, grey hamster with pink bow, and a small white domestic duck with orange beak — cuddled together under a blanket, starry sky above, mugs of hot cocoa, peaceful and warm, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                А после шторма всегда бывает тишина. И звёзды. И горячий какао.
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 13 — Возвращение на берег -->
+    <div class="page">
+        <div class="page-label">~ страница 13 ~</div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft pastel watercolor, cruise ship dock — a small white domestic duck with orange beak clinging to the ship's railing refusing to leave, a grey-beige "sad hamster meme" plush hamster and grey hamster with pink bow trying to pull her away, funny dramatic scene, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="speech-row">
+                    <div class="speech-avatar">&#129414;</div>
+                    <div class="speech-bubble kryasha">
+                        <div class="speech-name">Кряша</div>
+                        НЕ КРЯ!!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-dramatic">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Dark moody watercolor, a stern serious penguin in a border officer uniform looking at documents, dramatic lighting from above, ominous atmosphere, a tiny "sad hamster meme" plush hamster looking up nervously, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Но на берегу их ждал сюрприз. И не из приятных.
+            </div>
+        </div>
+    </div>
+
+    <div class="chapter-divider">&#183; &#183; &#183;</div>
+</section>
+
+<!-- ==================== ГЛАВА 5: СИБИРЬ ==================== -->
+<section class="chapter" id="siberia">
+    <div class="chapter-cover">
+        <div class="chapter-number">Глава пятая</div>
+        <div class="chapter-title">Сибирь</div>
+        <div class="chapter-subtitle">&#171;Когда мир говорит &laquo;подожди&raquo;&#187;</div>
+    </div>
+
+    <!-- Стр. 14 — Плохие новости -->
+    <div class="page">
+        <div class="page-label">~ страница 14 ~</div>
+
+        <div class="panel-dramatic">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Dark moody watercolor, a stern penguin in uniform stamping "DENIED" on a document, a tiny "sad hamster meme" plush hamster with the saddest eyes imaginable looking up, dramatic harsh lighting, cold atmosphere, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                У Чепчика забрали визу. Просто так. Мир иногда бывает несправедливым даже к маленьким хомякам.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft but melancholic watercolor, three cute animals hugging tightly — a grey-beige "sad hamster meme" plush hamster, a small grey plush hamster with big black eyes and pink bow, and a small white domestic duck with orange beak — all crying, the duck claims it's just water, airport farewell scene, emotional but gentle, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                &laquo;Я вернусь,&raquo; — сказал Чепчик. &laquo;Я знаю,&raquo; — сказала Ева. &laquo;Кря,&raquo; — сказала Кряша, и в этом &laquo;кря&raquo; было всё.
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 15 — Сибирь -->
+    <div class="page">
+        <div class="page-label">~ страница 15 ~</div>
+
+        <div class="panel">
+            <div class="panel-image wide">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Cold blue-white watercolor, panoramic view, vast snowy Siberian landscape with birch trees, a tiny "sad hamster meme" plush hamster in an enormous ushanka hat standing alone in the snow, stark contrast to previous warm scenes, lonely but determined, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Сибирь. Минус сорок. Щёки замёрзли в грустном положении, что, впрочем, было привычно.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Warm soft watercolor, a cozy but small room — a grey-beige "sad hamster meme" plush hamster sitting at a tiny desk writing a letter, a photo of a grey hamster with pink bow and a white duck pinned on the wall, snow visible through the window, warm lamp light inside cold world outside, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                &laquo;Дорогая Ева, сегодня минус сорок два. Нашёл отличные семечки. Скучаю. Твой Чепчик. P.S. Передай Кряше, что здесь вода твёрдая.&raquo;
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft melancholic watercolor, a small grey plush hamster with big black eyes and pink bow reading a letter, a small white domestic duck with orange beak sitting next to her looking sad, warm room but sad mood, soft lighting, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Расстояние — это когда хочешь обнять, а можешь только написать.
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 16 — Не сдаваться -->
+    <div class="page">
+        <div class="page-label">~ страница 16 ~</div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Cold but determined watercolor, a grey-beige "sad hamster meme" plush hamster standing in a snowdrift with a determined face, next to a towering stack of paperwork and documents reaching to the ceiling, Siberian winter, brave little hamster, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Чепчик решил: грустная мордочка — это не повод сдаваться. Грустная мордочка — это суперсила.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft watercolor montage style — multiple scenes: a grey-beige "sad hamster meme" plush hamster filling out forms at a desk, running through snow to an office, sitting in a long queue, calendar pages flying showing passing days, winter scenes through windows, determined but tired, Pixar style children's book illustration, no text
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Warm soft watercolor, a video call scene — a laptop screen showing a small grey plush hamster with big black eyes and pink bow and a small white domestic duck with orange beak waving happily, a grey-beige "sad hamster meme" plush hamster in front of the laptop smiling but with tears, a mix of happy and sad, warm light from the screen in a cold room, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Но каждый вечер они были вместе. Хоть и через экран.
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 17 — Виза! -->
+    <div class="page">
+        <div class="page-label">~ страница 17 ~</div>
+
+        <div class="panel-dramatic">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Dramatic watercolor, close-up of tiny hamster paws trembling while holding an envelope, dramatic light from a window falling on the envelope like a spotlight, tense cinematic moment, Pixar style children's book illustration, no text
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Dramatic watercolor, a grey-beige "sad hamster meme" plush hamster opening an envelope, extreme close-up of his face, eyes becoming HUGE with shock and hope, dramatic lighting, suspenseful moment, Pixar style children's book illustration, no text
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-joy">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Bright joyful watercolor EXPLOSION of color, a grey-beige "sad hamster meme" plush hamster jumping to the ceiling with pure joy, tears of happiness flying, snow swirling around, the happiest moment, holding a visa document triumphantly, golden light breaking through, the saddest hamster in the world is the happiest, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                ВИЗААААА!!! И мир сказал: &laquo;Ладно, маленький хомяк. Ты заслужил.&raquo;
+            </div>
+        </div>
+    </div>
+
+    <div class="chapter-divider">&#183; &#183; &#183;</div>
+</section>
+
+<!-- ==================== ГЛАВА 6: ТЕХАС ==================== -->
+<section class="chapter" id="texas">
+    <div class="chapter-cover">
+        <div class="chapter-number">Глава шестая</div>
+        <div class="chapter-title">Техас &mdash; Creekside Park</div>
+        <div class="chapter-subtitle">&#171;Дом&#187;</div>
+    </div>
+
+    <!-- Стр. 18 — Воссоединение -->
+    <div class="page">
+        <div class="page-label">~ страница 18 ~</div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft warm watercolor, an airport arrivals area — a small grey plush hamster with big black eyes and pink bow nervously adjusting her bow, a small white domestic duck with orange beak holding a crooked hand-drawn sign that says "CHEPCHIK!!!", both looking at the arrivals gate with anticipation, Pixar style children's book illustration, no text
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft dreamy watercolor, airport arrivals — a grey-beige "sad hamster meme" plush hamster emerging from the gates, everything seems to slow down, he sees a small grey plush hamster with big black eyes and pink bow and a small duck in the distance, emotional cinematic moment, soft focus, warm light, Pixar style children's book illustration, no text
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-full">
+            <div class="panel-image" style="aspect-ratio: 1/1;">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft warm watercolor, the most tender embrace — a grey-beige "sad hamster meme" plush hamster, a small grey plush hamster with big black eyes and pink bow, and a small white domestic duck with orange beak all hugging each other tightly, tears of joy, nothing else in the frame just them, warm golden light around them, the most emotional reunion, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption" style="font-size: 1.4rem;">
+                Есть вещи, ради которых стоит пережить любую Сибирь.
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 19 — Новый дом -->
+    <div class="page">
+        <div class="page-label">~ страница 19 ~</div>
+
+        <div class="panel">
+            <div class="panel-image wide">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft warm watercolor, panoramic view, Texas suburb — green trees, warm sun, a sign reading "Welcome to Creekside Park", three tiny figures — a grey-beige "sad hamster meme" plush hamster, grey hamster with pink bow, and a white duck — standing before it looking happy, lush green nature, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                Creekside Park. Здесь были деревья, речка, и, главное — никакого минус сорок.
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft warm watercolor, a cute small house with a porch — a grey-beige "sad hamster meme" plush hamster carrying a small grey plush hamster with big black eyes and pink bow over the threshold (struggling a bit but trying hard), a small white domestic duck with orange beak already splashing in a nearby creek, warm sunny day, home sweet home feeling, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble">
+                        <div class="speech-name">Чепчик</div>
+                        Это наш дом?
+                    </div>
+                </div>
+                <div class="speech-row">
+                    <div class="speech-avatar">&#128057;</div>
+                    <div class="speech-bubble eva">
+                        <div class="speech-name">Ева</div>
+                        Это наш дом.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-image">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft warm watercolor, evening — a cozy small house glowing with warm light from inside, through the window you can see three tiny figures on a sofa — a grey-beige "sad hamster meme" plush hamster, a small grey plush hamster with big black eyes and pink bow, and a small white domestic duck with orange beak — watching TV, warm and peaceful, Pixar style children's book illustration, no text
+                </div>
+            </div>
+            <div class="caption">
+                И впервые за долгое время грустная мордочка Чепчика была грустной просто потому что такая мордочка. А не потому что ему грустно.
+            </div>
+        </div>
+    </div>
+
+    <!-- Стр. 20 — Финал -->
+    <div class="page">
+        <div class="page-label">~ страница 20 ~</div>
+
+        <div class="panel">
+            <div class="panel-image wide">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft warm watercolor, morning at a cute porch — a grey-beige "sad hamster meme" plush hamster and a small grey plush hamster with big black eyes and pink bow sitting together drinking tea, a small white domestic duck with orange beak dozing off nearby, everything is peaceful and perfect, warm sunrise, Texas greenery, Pixar style children's book illustration, no text
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-full">
+            <div class="panel-image wide">
+                <div class="image-prompt">
+                    <strong>AI Prompt</strong>
+                    Soft warm watercolor, wide panoramic view, a cute small house among green Texas landscape, a creek with sparkling water, big warm sun, everything looks like home and happiness, golden hour, Pixar style children's book illustration, no text
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== ФИНАЛ ==================== -->
+<section class="chapter" id="finale">
+    <div class="page">
+        <div class="finale">
+
+            <div class="finale-album">
+                <div class="finale-photo" style="--rotate: -3deg;">&#127960; Ереван</div>
+                <div class="finale-photo" style="--rotate: 2deg;">&#127796; Лос-Анджелес</div>
+                <div class="finale-photo" style="--rotate: -1deg;">&#127965; Майами</div>
+                <div class="finale-photo" style="--rotate: 3deg;">&#128674; Круиз</div>
+                <div class="finale-photo" style="--rotate: -2deg;">&#10052;&#65039; Сибирь</div>
+                <div class="finale-photo" style="--rotate: 1deg;">&#127969; Creekside Park</div>
+                <div class="finale-photo center">&#128057;&#128057;&#129414; Чепчик, Ева и Кряша — дома</div>
+            </div>
+
+            <div class="finale-message">
+                Счастье — это не место на карте.<br>
+                Счастье — это когда твои любимые рядом.<br>
+                А карта — это просто список приключений,<br>
+                которые привели тебя домой.
+            </div>
+
+            <div class="finale-dedication">
+                С днём рождения, любимая.<br>
+                Твои Чепчик, Ева и Кряша.
+            </div>
+
+            <div class="finale-hearts">&#10084;&#65039;</div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    Сделано с любовью &#10084;&#65039;
+</footer>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+    // === Progress Bar ===
+    const progressBar = document.getElementById('progressBar');
+
+    function updateProgress() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = progress + '%';
+    }
+
+    // === Scroll Animation (Intersection Observer) ===
+    const animatedElements = document.querySelectorAll('.panel, .panel-full, .panel-dramatic, .panel-joy, .caption-standalone');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    animatedElements.forEach(el => observer.observe(el));
+
+    // === Active Chapter Navigation ===
+    const chapters = document.querySelectorAll('.chapter');
+    const navDots = document.querySelectorAll('.nav-dot');
+    const chapterNav = document.getElementById('chapterNav');
+    let lastScrollY = 0;
+
+    function updateActiveChapter() {
+        let currentChapter = '';
+        const scrollY = window.scrollY + 200;
+
+        chapters.forEach(chapter => {
+            if (chapter.offsetTop <= scrollY) {
+                currentChapter = chapter.id;
+            }
+        });
+
+        navDots.forEach(dot => {
+            dot.classList.toggle('active', dot.dataset.chapter === currentChapter);
+        });
+
+        // Hide/show nav on scroll direction
+        const currentScrollY = window.scrollY;
+        if (currentScrollY > lastScrollY && currentScrollY > 100) {
+            chapterNav.classList.add('hidden');
+        } else {
+            chapterNav.classList.remove('hidden');
+        }
+        lastScrollY = currentScrollY;
+    }
+
+    // === Throttled scroll handler ===
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                updateProgress();
+                updateActiveChapter();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    // Initial call
+    updateProgress();
+    updateActiveChapter();
+
+    // === Set character avatar images ===
+    document.querySelectorAll('.speech-row').forEach(row => {
+        const avatar = row.querySelector('.speech-avatar');
+        const bubble = row.querySelector('.speech-bubble');
+        if (!avatar || !bubble) return;
+
+        let src = 'sources/чепчик.webp'; // default: Chepchik
+        if (bubble.classList.contains('eva')) {
+            src = 'sources/ева.webp';
+        } else if (bubble.classList.contains('kryasha')) {
+            src = 'sources/кряша.webp';
+        }
+        avatar.innerHTML = '<img src="' + src + '" alt="">';
+    });
+</script>
+
+</body>
+</html>
