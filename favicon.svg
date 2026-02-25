@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background circle - warm beige -->
+  <circle cx="256" cy="256" r="256" fill="#F5E6D3"/>
+
+  <!-- Hamster body - round blob shape -->
+  <ellipse cx="256" cy="280" rx="180" ry="170" fill="#D4B896"/>
+
+  <!-- Belly lighter area -->
+  <ellipse cx="256" cy="310" rx="120" ry="110" fill="#E8D5B8"/>
+
+  <!-- Left ear -->
+  <ellipse cx="155" cy="140" rx="50" ry="55" fill="#D4B896"/>
+  <ellipse cx="155" cy="140" rx="32" ry="38" fill="#E8B4B8"/>
+
+  <!-- Right ear -->
+  <ellipse cx="357" cy="140" rx="50" ry="55" fill="#D4B896"/>
+  <ellipse cx="357" cy="140" rx="32" ry="38" fill="#E8B4B8"/>
+
+  <!-- Head -->
+  <ellipse cx="256" cy="230" rx="155" ry="140" fill="#D4B896"/>
+
+  <!-- Face lighter area -->
+  <ellipse cx="256" cy="250" rx="110" ry="100" fill="#E2CAA8"/>
+
+  <!-- Left eye - big sad eye -->
+  <ellipse cx="205" cy="225" rx="38" ry="42" fill="#1a1a1a"/>
+  <!-- Left eye reflection big -->
+  <ellipse cx="192" cy="212" rx="14" ry="16" fill="white"/>
+  <!-- Left eye reflection small -->
+  <ellipse cx="215" cy="235" rx="7" ry="8" fill="white" opacity="0.6"/>
+
+  <!-- Right eye - big sad eye -->
+  <ellipse cx="307" cy="225" rx="38" ry="42" fill="#1a1a1a"/>
+  <!-- Right eye reflection big -->
+  <ellipse cx="294" cy="212" rx="14" ry="16" fill="white"/>
+  <!-- Right eye reflection small -->
+  <ellipse cx="317" cy="235" rx="7" ry="8" fill="white" opacity="0.6"/>
+
+  <!-- Sad eyebrows -->
+  <path d="M165 190 Q190 178 240 195" stroke="#8B6F4E" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M347 190 Q322 178 272 195" stroke="#8B6F4E" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+  <!-- Nose -->
+  <ellipse cx="256" cy="275" rx="12" ry="9" fill="#C4907A"/>
+
+  <!-- Mouth - sad/neutral -->
+  <path d="M235 295 Q256 288 277 295" stroke="#9B7B5E" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+  <!-- Cheeks - rosy -->
+  <ellipse cx="170" cy="270" rx="28" ry="20" fill="#F2B5A0" opacity="0.4"/>
+  <ellipse cx="342" cy="270" rx="28" ry="20" fill="#F2B5A0" opacity="0.4"/>
+
+  <!-- Little paws at bottom -->
+  <ellipse cx="205" cy="390" rx="30" ry="18" fill="#C9A87C"/>
+  <ellipse cx="307" cy="390" rx="30" ry="18" fill="#C9A87C"/>
+</svg>
