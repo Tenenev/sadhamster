@@ -470,6 +470,38 @@
             transform: translateY(0);
         }
 
+        /* ===== VIDEO PANEL ===== */
+        .panel-video {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(107, 76, 59, 0.08);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .panel-video.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .panel-video video {
+            width: 100%;
+            display: block;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .panel-video .caption {
+            padding: 16px 24px;
+            font-family: 'Caveat', cursive;
+            font-size: 1.2rem;
+            color: #6b4c3b;
+            line-height: 1.4;
+        }
+
         /* ===== DRAMATIC PANEL ===== */
         .panel-dramatic {
             background: #3a2820;
@@ -742,6 +774,11 @@
                 А в городском фонтане жила уточка Кряша, которая считала, что любой фонтан — это маленькое море.
             </div>
         </div>
+    </div>
+
+    <div class="panel-video">
+        <video src="video/Знакомство.mp4" controls playsinline preload="metadata"></video>
+        <div class="caption">Так начиналась эта история...</div>
     </div>
 
     <!-- Стр. 2 — Сборы -->
@@ -1338,6 +1375,11 @@
         </div>
     </div>
 
+    <div class="panel-video">
+        <video src="video/Воссоединение.mp4" controls playsinline preload="metadata"></video>
+        <div class="caption">А вот как это было на самом деле...</div>
+    </div>
+
     <!-- Стр. 19 — Новый дом -->
     <div class="page">
         <div class="page-label">~ страница 19 ~</div>
@@ -1451,7 +1493,7 @@
     }
 
     // === Scroll Animation (Intersection Observer) ===
-    const animatedElements = document.querySelectorAll('.panel, .panel-full, .panel-dramatic, .panel-joy, .caption-standalone');
+    const animatedElements = document.querySelectorAll('.panel, .panel-full, .panel-dramatic, .panel-joy, .panel-video, .caption-standalone');
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
