@@ -502,6 +502,86 @@
             line-height: 1.4;
         }
 
+        /* ===== RENAME BUTTON ===== */
+        .rename-btn {
+            display: inline-block;
+            margin-left: 4px;
+            cursor: pointer;
+            opacity: 0.4;
+            transition: opacity 0.3s;
+            font-size: 0.8em;
+            vertical-align: middle;
+        }
+        .rename-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* ===== RENAME MODAL ===== */
+        .rename-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        .rename-overlay.active {
+            display: flex;
+        }
+        .rename-modal {
+            background: #fff8f0;
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 340px;
+            width: 90%;
+            box-shadow: 0 8px 40px rgba(107,76,59,0.2);
+            text-align: center;
+            font-family: 'Nunito', sans-serif;
+        }
+        .rename-modal h3 {
+            font-family: 'Caveat', cursive;
+            font-size: 1.6rem;
+            color: #6b4c3b;
+            margin: 0 0 16px;
+        }
+        .rename-modal input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #f2d4d7;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-family: 'Caveat', cursive;
+            text-align: center;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .rename-modal input:focus {
+            border-color: #e8a0b4;
+        }
+        .rename-modal-buttons {
+            margin-top: 16px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .rename-modal-buttons button {
+            padding: 8px 20px;
+            border-radius: 12px;
+            border: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .rename-modal-buttons .btn-save {
+            background: #e8a0b4;
+            color: white;
+        }
+        .rename-modal-buttons .btn-cancel {
+            background: #f0e6dc;
+            color: #6b4c3b;
+        }
+
         /* ===== DRAMATIC PANEL ===== */
         .panel-dramatic {
             background: #3a2820;
@@ -730,7 +810,7 @@
         </div>
         <div class="hero-character">
             <img class="hero-character-photo" src="generated/кряша.png" alt="Кряша">
-            <span class="hero-character-name">Кряша</span>
+            <span class="hero-character-name" id="kryasha-name">Кряша<span class="rename-btn" id="renameBtn" title="Переименовать">&#9998;</span></span>
         </div>
     </div>
     <p class="scroll-hint">&#8595; Листай вниз, чтобы начать &#8595;</p>
@@ -1480,7 +1560,19 @@
     Сделано с любовью &#10084;&#65039;
 </footer>
 
+<div class="rename-overlay" id="renameOverlay">
+    <div class="rename-modal">
+        <h3>Как зовут уточку?</h3>
+        <input type="text" id="renameInput" placeholder="Новое имя" maxlength="20">
+        <div class="rename-modal-buttons">
+            <button class="btn-save" id="renameSave">Сохранить</button>
+            <button class="btn-cancel" id="renameCancel">Отмена</button>
+        </div>
+    </div>
+</div>
+
 <!-- ==================== JAVASCRIPT ==================== -->
+<script src="https://cdn.jsdelivr.net/npm/lvovich/dist/lvovich.min.js"></script>
 <script>
     // === Progress Bar ===
     const progressBar = document.getElementById('progressBar');
@@ -1569,6 +1661,94 @@
         }
         avatar.innerHTML = '<img src="' + src + '" alt="">';
     });
+
+    // === Rename Кряша ===
+    const ORIGINAL_NAME = 'Кряша';
+
+    function declineName(name) {
+        // lvovich — библиотека склонения русских имён (20KB, 1000+ правил)
+        if (typeof lvovich !== 'undefined' && lvovich.inclineFirstname) {
+            // Автоопределение пола, если lvovich не знает — эвристика по окончанию
+            var gender = lvovich.getFirstnameGender(name);
+            if (!gender) {
+                if (/[аяь]$/i.test(name)) gender = 'female';
+                else gender = 'male';
+            }
+            return {
+                nom: name,
+                gen: lvovich.inclineFirstname(name, 'genitive', gender) || name,
+                dat: lvovich.inclineFirstname(name, 'dative', gender) || name
+            };
+        }
+        // Fallback если CDN не загрузился
+        return { nom: name, gen: name, dat: name };
+    }
+
+    function applyName(newName) {
+        const forms = declineName(newName);
+        const orig = declineName(ORIGINAL_NAME);
+
+        document.title = document.title
+            .replace(orig.gen, forms.gen)
+            .replace(orig.nom, forms.nom);
+
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) {
+            const node = walker.currentNode;
+            let t = node.textContent;
+            if (t.includes(orig.dat)) t = t.replaceAll(orig.dat, forms.dat);
+            if (t.includes(orig.gen)) t = t.replaceAll(orig.gen, forms.gen);
+            if (t.includes(orig.nom)) t = t.replaceAll(orig.nom, forms.nom);
+            if (t !== node.textContent) node.textContent = t;
+        }
+
+        document.querySelectorAll('img[alt="' + ORIGINAL_NAME + '"]').forEach(img => {
+            img.alt = forms.nom;
+        });
+
+        const nameEl = document.getElementById('kryasha-name');
+        if (nameEl) nameEl.childNodes[0].textContent = forms.nom;
+    }
+
+    // Modal
+    (function() {
+        const modal = document.getElementById('renameOverlay');
+        const field = document.getElementById('renameInput');
+
+        document.getElementById('renameBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            field.value = localStorage.getItem('kryasha_name') || ORIGINAL_NAME;
+            modal.classList.add('active');
+            setTimeout(function() { field.focus(); field.select(); }, 100);
+        });
+
+        document.getElementById('renameSave').addEventListener('click', function() {
+            var name = field.value.trim();
+            if (!name) return;
+            if (name === ORIGINAL_NAME) {
+                localStorage.removeItem('kryasha_name');
+            } else {
+                localStorage.setItem('kryasha_name', name);
+            }
+            location.reload();
+        });
+
+        document.getElementById('renameCancel').addEventListener('click', function() {
+            modal.classList.remove('active');
+        });
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+
+        field.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('renameSave').click();
+            if (e.key === 'Escape') modal.classList.remove('active');
+        });
+
+        var saved = localStorage.getItem('kryasha_name');
+        if (saved) applyName(saved);
+    })();
 </script>
 
 </body>
