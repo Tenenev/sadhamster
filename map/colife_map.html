@@ -18,6 +18,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .mf-label{font-size:13px;color:#1c1c1e;white-space:nowrap}
 .mf-slider{flex:1;accent-color:#007aff}
 .mf-val{font-size:13px;font-weight:600;color:#007aff;white-space:nowrap;min-width:52px;text-align:right}
+.price-filter{background:#fff;padding:8px 16px;border-bottom:1px solid #e5e5ea;display:flex;align-items:center;gap:10px}
 .geo-filter{background:#fff;padding:8px 16px;border-bottom:1px solid #e5e5ea;overflow-x:auto;white-space:nowrap}
 .tabs{display:flex;background:#fff;border-bottom:1px solid #e5e5ea}
 .tab{flex:1;text-align:center;padding:10px;font-size:14px;font-weight:500;cursor:pointer;color:#8e8e93;border-bottom:2px solid transparent}
@@ -85,6 +86,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     oninput="setMetroFilter(this.value)">
   <span class="mf-val" id="metro-val">любое</span>
 </div>
+<div class="price-filter">
+  <span class="mf-label">💰 цена:</span>
+  <input type="range" id="price-slider" class="mf-slider" min="20" max="55" step="5" value="55"
+    oninput="setPriceFilter(this.value)">
+  <span class="mf-val" id="price-val">любая</span>
+</div>
 <div class="geo-filter">
   <span class="fbtn active" id="geo-all" onclick="setGeoFilter('all')">🌍 Везде</span>
   <span class="fbtn" id="geo-sadovoe" onclick="setGeoFilter('sadovoe')">🔵 Садовое</span>
@@ -106,6 +113,7 @@ const METRO = [{"name": "Медведково", "lat": 55.8871767, "lon": 37.661
 
 let currentFilter = 'all';
 let maxMetroMin = 999;
+let maxPrice = 999999;
 let geoFilter = 'all';
 let leafletMap = null;
 let markers = [];
@@ -151,19 +159,28 @@ function getFiltered() {
   if (maxMetroMin < 999) {
     list = list.filter(l => l.metro && l.metro.some(m => m.minutes && m.minutes <= maxMetroMin));
   }
+  if (maxPrice < 999999) list = list.filter(l => l.price && l.price <= maxPrice);
   if (geoFilter !== 'all') list = list.filter(l => isInGeo(l, geoFilter));
   return list;
 }
 
 function saveState() {
   localStorage.setItem('colife_state', JSON.stringify({
-    filter: currentFilter, metro: maxMetroMin, geo: geoFilter, tab: _activeTab
+    filter: currentFilter, metro: maxMetroMin, price: maxPrice, geo: geoFilter, tab: _activeTab
   }));
 }
 
 function setMetroFilter(val) {
   maxMetroMin = parseInt(val) >= 40 ? 999 : parseInt(val);
   document.getElementById('metro-val').textContent = maxMetroMin >= 999 ? 'любое' : '≤ ' + val + ' мин';
+  saveState();
+  renderList();
+  if (leafletMap) updateMarkers();
+}
+
+function setPriceFilter(val) {
+  maxPrice = parseInt(val) >= 55 ? 999999 : parseInt(val) * 1000;
+  document.getElementById('price-val').textContent = maxPrice >= 999999 ? 'любая' : '≤ ' + val + 'k';
   saveState();
   renderList();
   if (leafletMap) updateMarkers();
@@ -528,6 +545,12 @@ try {
     var _sv = maxMetroMin >= 999 ? 40 : maxMetroMin;
     document.getElementById('metro-slider').value = _sv;
     document.getElementById('metro-val').textContent = maxMetroMin >= 999 ? 'любое' : '≤ ' + _sv + ' мин';
+  }
+  if (_s.price) {
+    maxPrice = _s.price;
+    var _pv = maxPrice >= 999999 ? 55 : Math.round(maxPrice / 1000);
+    document.getElementById('price-slider').value = _pv;
+    document.getElementById('price-val').textContent = maxPrice >= 999999 ? 'любая' : '≤ ' + _pv + 'k';
   }
   if (_s.tab === 'map') {
     _activeTab = 'map';
