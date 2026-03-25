@@ -13,6 +13,12 @@
   let revealed = false;
   let randIdx = null;
 
+  let ingameCIdx = null;
+  let ingameCorrect = null;
+  let ingameOptions = null;
+  let ingameSelected = null;
+  let ingameChecked = false;
+
   function shuffle(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -28,6 +34,17 @@
       Object.entries(attrs).forEach(([k, v]) => n.setAttribute(k, v));
     }
     return n;
+  }
+
+  function allIngredientNames() {
+    const s = new Set();
+    COCKTAILS.forEach((c) => {
+      (c.ingredients || []).forEach((i) => {
+        const t = String(i.name || "").trim();
+        if (t) s.add(t);
+      });
+    });
+    return [...s];
   }
 
   function iceNode(c) {
@@ -245,7 +262,7 @@
       return;
     }
     const idx = deck[deckPos];
-    renderFlashCard(root, COCKTAILS[idx]);
+    renderFlashCard(root, COCKTAILS[idx], { showSpaceHint: true });
   }
 
   function renderRandFlash() {
@@ -254,10 +271,11 @@
     if (randIdx === null) {
       randIdx = Math.floor(Math.random() * COCKTAILS.length);
     }
-    renderFlashCard(root, COCKTAILS[randIdx]);
+    renderFlashCard(root, COCKTAILS[randIdx], { showSpaceHint: false });
   }
 
-  function renderFlashCard(root, c) {
+  function renderFlashCard(root, c, opts) {
+    const showSpaceHint = opts && opts.showSpaceHint;
     const box = el("div", "flash-card");
     const inner = el("div", "flash-inner");
     const top = el("div", "card-top");
@@ -278,7 +296,7 @@
       stack.appendChild(cap);
     }
     top.appendChild(stack);
-    const head = el("div", "card-head");
+    const head = el("div", "card-head flash-head");
     const h3 = el("h3", "card-name");
     h3.textContent = c.name || "";
     head.appendChild(h3);
@@ -289,6 +307,16 @@
     }
     top.appendChild(head);
     inner.appendChild(top);
+
+    if (!revealed) {
+      const hintRow = el("div", "flash-hint-row");
+      const hint = el("p", "flash-hint");
+      hint.textContent = showSpaceHint
+        ? "Вспомните состав, метод и посуду. «Показать ответ» или пробел — открыть рецепт."
+        : "Вспомните состав, метод и посуду — затем нажмите «Показать ответ».";
+      hintRow.appendChild(hint);
+      inner.appendChild(hintRow);
+    }
 
     const ans = el("div", revealed ? "flash-answer is-visible" : "flash-answer");
     const badges = el("div", "badges badges-detail");
@@ -307,14 +335,6 @@
     }
     inner.appendChild(ans);
 
-    if (!revealed) {
-      const veil = el("div", "flash-veil");
-      const hint = el("p", "flash-hint");
-      hint.textContent =
-        "Вспомните состав, метод и посуду — затем «Показать ответ» (пробел в режиме карточек)";
-      veil.appendChild(hint);
-      inner.appendChild(veil);
-    }
     box.appendChild(inner);
     root.appendChild(box);
   }
@@ -330,6 +350,136 @@
     }
     renderDeckFlash();
     updateDeckProgress();
+  }
+
+  function getIngamePool() {
+    const cat = document.getElementById("ingame-cat").value;
+    let idx = COCKTAILS.map((_, i) => i);
+    if (cat) idx = idx.filter((i) => COCKTAILS[i].category === cat);
+    return idx;
+  }
+
+  function startIngredientRound() {
+    ingameChecked = false;
+    const res = document.getElementById("ingame-result");
+    if (res) {
+      res.textContent = "";
+      res.classList.remove("is-bad");
+    }
+    const pool = getIngamePool();
+    const root = document.getElementById("ingame-root");
+    if (!pool.length) {
+      root.textContent = "Нет коктейлей в выбранной категории.";
+      return;
+    }
+    let c = null;
+    for (let attempt = 0; attempt < 80; attempt++) {
+      ingameCIdx = pool[Math.floor(Math.random() * pool.length)];
+      c = COCKTAILS[ingameCIdx];
+      ingameCorrect = new Set(
+        (c.ingredients || [])
+          .map((i) => String(i.name || "").trim())
+          .filter(Boolean)
+      );
+      if (ingameCorrect.size > 0) break;
+    }
+    if (!ingameCorrect || ingameCorrect.size === 0) {
+      root.textContent = "Не удалось подобрать коктейль с ингредиентами.";
+      return;
+    }
+    const wrongPool = shuffle(allIngredientNames().filter((n) => !ingameCorrect.has(n)));
+    const nExtra = Math.min(6, wrongPool.length, Math.max(0, 16 - ingameCorrect.size));
+    const wrongPick = wrongPool.slice(0, nExtra);
+    ingameOptions = shuffle([...ingameCorrect, ...wrongPick]);
+    ingameSelected = new Set();
+    renderIngredientView();
+  }
+
+  function renderIngredientView() {
+    const root = document.getElementById("ingame-root");
+    root.textContent = "";
+    if (ingameCIdx == null) return;
+    const c = COCKTAILS[ingameCIdx];
+    const box = el("div", "flash-card");
+    const headBlock = el("div", "ingame-head");
+    const top = el("div", "card-top");
+    const stack = el("div", "card-photo-stack");
+    if (c.img) {
+      stack.appendChild(
+        el("img", "card-visual", {
+          src: c.img,
+          alt: c.glass || "",
+          width: "88",
+          height: "88",
+        })
+      );
+    }
+    if (c.glass) {
+      const cap = el("span", "glass-caption");
+      cap.textContent = c.glass;
+      stack.appendChild(cap);
+    }
+    top.appendChild(stack);
+    const hwrap = el("div", "card-head flash-head");
+    const h3 = el("h3", "card-name");
+    h3.textContent = c.name || "";
+    hwrap.appendChild(h3);
+    if (c.category) {
+      const cp = el("p", "flash-cat");
+      cp.textContent = c.category;
+      hwrap.appendChild(cp);
+    }
+    top.appendChild(hwrap);
+    headBlock.appendChild(top);
+    const prompt = el("p", "ingame-prompt");
+    prompt.textContent = "Отметьте все ингредиенты, которые входят в этот коктейль:";
+    headBlock.appendChild(prompt);
+    box.appendChild(headBlock);
+
+    const grid = el("div", "ingame-grid");
+    ingameOptions.forEach((name) => {
+      const b = el("button", "ing-opt", { type: "button" });
+      b.textContent = name;
+      if (ingameSelected.has(name)) b.classList.add("is-selected");
+      if (ingameChecked) {
+        b.disabled = true;
+        const isCor = ingameCorrect.has(name);
+        const sel = ingameSelected.has(name);
+        if (isCor && sel) b.classList.add("reveal-ok");
+        else if (isCor && !sel) b.classList.add("reveal-miss");
+        else if (!isCor && sel) b.classList.add("reveal-bad");
+        else b.classList.add("reveal-neutral");
+      } else {
+        b.addEventListener("click", () => {
+          if (ingameSelected.has(name)) ingameSelected.delete(name);
+          else ingameSelected.add(name);
+          b.classList.toggle("is-selected", ingameSelected.has(name));
+        });
+      }
+      grid.appendChild(b);
+    });
+    box.appendChild(grid);
+    root.appendChild(box);
+  }
+
+  function checkIngredientRound() {
+    if (ingameCIdx == null || ingameChecked) return;
+    ingameChecked = true;
+    renderIngredientView();
+    let ok = true;
+    ingameCorrect.forEach((n) => {
+      if (!ingameSelected.has(n)) ok = false;
+    });
+    ingameSelected.forEach((n) => {
+      if (!ingameCorrect.has(n)) ok = false;
+    });
+    const res = document.getElementById("ingame-result");
+    if (res) {
+      res.textContent = ok
+        ? "Верно: все ингредиенты отмечены верно."
+        : "Есть ошибки: зелёные — верно отмечены, жёлтая рамка — забыли отметить, красные — лишние.";
+      res.classList.toggle("is-bad", !ok);
+    }
   }
 
   document.getElementById("q").addEventListener("input", (e) => applySearch(e.target.value));
@@ -351,6 +501,7 @@
         revealed = false;
         renderRandFlash();
       }
+      if (mode === "ingame" && ingameCIdx === null) startIngredientRound();
     });
   });
 
@@ -371,6 +522,10 @@
     revealed = true;
     renderRandFlash();
   });
+
+  document.getElementById("ingame-cat").addEventListener("change", () => startIngredientRound());
+  document.getElementById("btn-ingame-new").addEventListener("click", () => startIngredientRound());
+  document.getElementById("btn-ingame-check").addEventListener("click", () => checkIngredientRound());
 
   document.addEventListener("keydown", (e) => {
     const cardsOn = !document.getElementById("panel-cards").classList.contains("hidden");
