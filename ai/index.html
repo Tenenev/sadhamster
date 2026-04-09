@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ChatGPT: чаты, проекты, файлы, глоссарий (контекст, промпт и др.) — на «ты», одним HTML-файлом.">
+  <title>Как работать с нейросетями — простая инструкция</title>
+  <style>
+/* Интерактивная инструкция — дружелюбная «книжная» тема */
+:root {
+  --bg: #fff8ee;
+  --bg-card: #ffffff;
+  --ink: #2b2d42;
+  --muted: #5c617a;
+  --accent: #2d6a4f;
+  --accent-soft: #e8f4f1;
+  --blue: #457b9d;
+  --orange: #f4a261;
+  --yellow: #ffd166;
+  --danger: #c1121f;
+  --danger-bg: #fff0f0;
+  --border: #2b2d42;
+  --radius: 18px;
+  --shadow: 4px 4px 0 var(--border);
+  --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --max: 52rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+.site-header {
+  padding: 1.5rem 1rem 0;
+  max-width: calc(var(--max) + 4rem);
+  margin: 0 auto;
+}
+
+.header-inner {
+  display: grid;
+  gap: 1rem;
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+}
+
+@media (min-width: 560px) {
+  .header-inner {
+    grid-template-columns: 1fr 1.1fr;
+    text-align: left;
+    justify-items: start;
+  }
+}
+
+.hero-img {
+  width: min(100%, 420px);
+  border-radius: var(--radius);
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow);
+  background: var(--bg-card);
+}
+
+.hero-img svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.lead {
+  font-size: 1.15rem;
+  color: var(--muted);
+  margin: 0 0 0.5rem;
+}
+
+h1 {
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  line-height: 1.2;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: center;
+  padding: 0.65rem 0.75rem;
+  margin: 1rem auto 0;
+  max-width: calc(var(--max) + 4rem);
+  background: rgba(255, 248, 238, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 3px solid var(--border);
+}
+
+.site-nav a {
+  display: inline-block;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-card);
+  box-shadow: 2px 2px 0 var(--border);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.site-nav a:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--border);
+}
+
+.site-nav a:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+main {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+
+section {
+  margin-bottom: 3rem;
+  scroll-margin-top: 5rem;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 1.45rem;
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 4px solid var(--accent);
+}
+
+.section-title .badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--yellow);
+  border: 2px solid var(--border);
+  padding: 0.2rem 0.5rem;
+  border-radius: 8px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 3px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem 1.35rem;
+  margin-bottom: 1.25rem;
+}
+
+.card h3 {
+  margin: 0 0 0.65rem;
+  font-size: 1.15rem;
+}
+
+.card ul {
+  margin: 0 0 0.75rem;
+  padding-left: 1.35rem;
+}
+
+.card ul li {
+  margin-bottom: 0.45rem;
+}
+
+.card p {
+  margin: 0 0 0.75rem;
+}
+
+.card p:last-child {
+  margin-bottom: 0;
+}
+
+.figure-block {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.figure-block svg {
+  max-width: 100%;
+  height: auto;
+  border-radius: 14px;
+  border: 3px solid var(--border);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.figure-caption {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+.scenario-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 720px) {
+  .scenario-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.scenario-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: start;
+  background: var(--bg-card);
+  border: 3px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: 3px 3px 0 var(--border);
+}
+
+.scenario-card svg {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.scenario-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+
+.scenario-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+details.accordion {
+  border: 3px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-card);
+  margin-bottom: 0.65rem;
+  overflow: hidden;
+}
+
+details.accordion summary {
+  cursor: pointer;
+  padding: 0.85rem 1rem;
+  font-weight: 700;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: var(--accent-soft);
+}
+
+details.accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+details.accordion summary::after {
+  content: "▼";
+  font-size: 0.7rem;
+  transition: transform 0.2s;
+}
+
+details.accordion[open] summary::after {
+  transform: rotate(-180deg);
+}
+
+details.accordion .accordion-body {
+  padding: 0 1rem 1rem;
+  border-top: 2px dashed rgba(43, 45, 66, 0.2);
+}
+
+details.accordion summary:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: -3px;
+}
+
+.prompt-block {
+  position: relative;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f7f9fc;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+}
+
+.prompt-block pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.copy-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 0.65rem;
+}
+
+button.copy-btn {
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.45rem 0.9rem;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--yellow);
+  box-shadow: 2px 2px 0 var(--border);
+  transition: transform 0.06s ease;
+}
+
+button.copy-btn:hover {
+  transform: translate(-1px, -1px);
+}
+
+button.copy-btn:focus-visible {
+  outline: 3px solid var(--blue);
+}
+
+button.copy-btn.copied {
+  background: var(--accent-soft);
+}
+
+.hack-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hack-list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed rgba(43, 45, 66, 0.2);
+}
+
+.hack-list li:last-child {
+  border-bottom: none;
+}
+
+.hack-num {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--orange);
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.prompt-library .card h3 {
+  margin-top: 0;
+}
+
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgba(43, 45, 66, 0.12);
+}
+
+.checklist input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.2rem;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.checklist label {
+  cursor: pointer;
+}
+
+.note {
+  font-size: 0.92rem;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--blue);
+  background: rgba(69, 123, 157, 0.08);
+  border-radius: 0 10px 10px 0;
+  margin: 1rem 0;
+}
+
+.warning {
+  border-left-color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.site-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  border-top: 3px solid var(--border);
+}
+
+.doc-back-btn {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 60;
+  padding: 0.55rem 1rem;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-card);
+  box-shadow: 3px 3px 0 var(--border);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.doc-back-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--border);
+}
+
+.doc-back-btn:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .doc-back-btn {
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    right: max(0.75rem, env(safe-area-inset-right));
+    left: auto;
+  }
+}
+
+kbd {
+  font-family: ui-monospace, monospace;
+  font-size: 0.85em;
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.glossary {
+  scroll-margin-top: 5rem;
+}
+
+.glossary dt[id] {
+  scroll-margin-top: 5rem;
+}
+
+.glossary dl {
+  margin: 0;
+}
+
+.glossary dt {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-top: 1.15rem;
+  color: var(--ink);
+}
+
+.glossary dt:first-of-type {
+  margin-top: 0;
+}
+
+.glossary dt a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.glossary dt a:hover,
+.glossary dt a:focus-visible {
+  text-decoration: underline;
+}
+
+.glossary dd {
+  margin: 0.4rem 0 0;
+  padding: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.glossary code {
+  font-size: 0.92em;
+  padding: 0.1rem 0.3rem;
+  background: rgba(69, 123, 157, 0.1);
+  border-radius: 4px;
+}
+
+/* Ссылки на термины глоссария в основном тексте */
+a.gloss-link {
+  color: var(--blue);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  font-weight: inherit;
+}
+
+a.gloss-link:hover,
+a.gloss-link:focus-visible {
+  text-decoration-style: solid;
+}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">К содержанию</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="hero-img" role="img" aria-label="Иллюстрация: солнце, экран с текстом и дружелюбная сцена">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 280" fill="none" aria-hidden="true">
+          <rect width="480" height="280" rx="24" fill="#FFF8EE"/>
+          <circle cx="120" cy="90" r="40" fill="#FFD166" stroke="#2B2D42" stroke-width="3"/>
+          <path d="M95 95c8-12 22-18 38-15" stroke="#2B2D42" stroke-width="3" stroke-linecap="round"/>
+          <ellipse cx="380" cy="200" rx="70" ry="22" fill="#E8F4F1" stroke="#2B2D42" stroke-width="3"/>
+          <rect x="300" y="120" width="120" height="90" rx="16" fill="#fff" stroke="#2B2D42" stroke-width="3"/>
+          <rect x="315" y="138" width="90" height="8" rx="4" fill="#457B9D"/>
+          <rect x="315" y="155" width="70" height="8" rx="4" fill="#E8E8E8"/>
+          <rect x="315" y="172" width="80" height="8" rx="4" fill="#E8E8E8"/>
+          <circle cx="360" cy="100" r="28" fill="#F4A261" stroke="#2B2D42" stroke-width="3"/>
+          <path d="M345 95h30M345 105h22" stroke="#2B2D42" stroke-width="3" stroke-linecap="round"/>
+          <path d="M60 200l30-20 25 15 35-25 40 30" stroke="#2D6A4F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="50" cy="210" r="6" fill="#E63946"/>
+          <circle cx="95" cy="175" r="6" fill="#457B9D"/>
+          <circle cx="150" cy="195" r="6" fill="#F4A261"/>
+          <text x="240" y="265" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="14" font-weight="600">Простые шаги — большой эффект</text>
+        </svg>
+      </div>
+      <div>
+        <h1>Как работать с нейросетями без лишней суеты</h1>
+        <p class="lead">Коротко про ChatGPT: отдельные <a href="#gloss-chat" class="gloss-link">чаты</a>, аккуратный <a href="#gloss-context" class="gloss-link">контекст</a> и готовые формулировки для писем, таблиц и планов.</p>
+      </div>
+    </div>
+  </header>
+
+  <nav class="site-nav" aria-label="Разделы страницы">
+    <a href="#intro">Введение</a>
+    <a href="#basics">Основы</a>
+    <a href="#projects">Проекты</a>
+    <a href="#scenarios">Сценарии</a>
+    <a href="#prompts">Промпты</a>
+    <a href="#glossary">Глоссарий</a>
+    <a href="#checklist">Чеклист</a>
+  </nav>
+
+  <main id="main">
+    <section id="intro" aria-labelledby="intro-heading">
+      <h2 id="intro-heading" class="section-title"><span class="badge">Старт</span> Зачем тебе это</h2>
+
+      <div class="card">
+        <p><a href="#gloss-model" class="gloss-link">Нейросеть</a> не заменит твою работу целиком, но снимает «пустой лист»: можно быстро получить <strong>структуру</strong> документа, <strong>черновик</strong> письма, <strong>варианты</strong> формулировок и идеи для таблицы или контент-плана. Если завести в ChatGPT <strong><a href="#gloss-project" class="gloss-link">проект</a></strong> и положить туда <strong><a href="#gloss-sources" class="gloss-link">файлы-источники</a></strong> (ТЗ, образцы, календарь), не придётся каждый раз заново вставлять одно и то же — об этом отдельный раздел ниже. Отправлять письма, звонить и проверять факты всё равно нужно тебе.</p>
+        <div class="figure-block">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" width="80" height="80" aria-hidden="true"><rect x="10" y="24" width="60" height="40" rx="6" fill="#fff" stroke="#2B2D42" stroke-width="3"/><path d="M10 28l30 22 30-22" stroke="#457B9D" stroke-width="3" fill="none"/></svg>
+          <p class="figure-caption">Письма и документы — основной фокус этой страницы.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>ChatGPT: бесплатно и Plus</h3>
+        <p><strong>Бесплатная версия</strong> подойдёт, чтобы попробовать: короткие тексты, простые списки. Ограничения по длине <a href="#gloss-chat" class="gloss-link">диалога</a> и нагрузке в час могут мешать, если задач много.</p>
+        <p><strong>Подписка Plus</strong> обычно даёт более стабильный доступ, загрузку файлов в <a href="#gloss-chat" class="gloss-link">чат</a> и чаще всего — <strong><a href="#gloss-project" class="gloss-link">проекты</a></strong>: папка с инструкцией и документами, которые подхватываются в <a href="#gloss-chat" class="gloss-link">чатах</a> внутри <a href="#gloss-project" class="gloss-link">проекта</a>. На бесплатном тарифе <a href="#gloss-project" class="gloss-link">проекты</a> и долгая работа с кучей файлов могут быть ограничены. Точные функции зависят от версии приложения — глянь справку OpenAI.</p>
+      </div>
+
+      <p class="note" style="margin-top:0.5rem;"><strong>Словечко непонятно?</strong> Внизу есть <a href="#glossary">глоссарий</a> — там простыми словами про <a href="#gloss-context" class="gloss-link">контекст</a>, <a href="#gloss-prompt" class="gloss-link">промпт</a> и остальное.</p>
+    </section>
+
+    <section id="basics" aria-labelledby="basics-heading">
+      <h2 id="basics-heading" class="section-title"><span class="badge">Важно</span> Как работать с AI</h2>
+
+      <div class="card">
+        <h3>1. План — в отдельном <a href="#gloss-chat" class="gloss-link">чате</a></h3>
+        <p>Открой <strong>новый <a href="#gloss-chat" class="gloss-link">чат</a></strong> и используй его только для «карты» недели или месяца: список задач, порядок шагов, что собрать по документам. Не пиши там же готовое письмо клиенту — так <a href="#gloss-context" class="gloss-link">контекст</a> остаётся чистым.</p>
+        <div class="figure-block">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" fill="none" role="img" aria-label="Схема: один диалоговый блок с подписью «чат только для плана»">
+            <rect width="320" height="200" rx="16" fill="#F0FAF7"/>
+            <rect x="40" y="40" width="240" height="120" rx="20" fill="#fff" stroke="#2B2D42" stroke-width="3"/>
+            <text x="160" y="78" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="13" font-weight="700">Чат только для плана</text>
+            <rect x="60" y="92" width="140" height="10" rx="3" fill="#2D6A4F" opacity=".35"/>
+            <rect x="60" y="110" width="180" height="10" rx="3" fill="#457B9D" opacity=".25"/>
+            <rect x="60" y="128" width="100" height="10" rx="3" fill="#457B9D" opacity=".25"/>
+            <circle cx="160" cy="175" r="8" fill="#2D6A4F"/>
+            <text x="160" y="179" text-anchor="middle" fill="#fff" font-family="system-ui,sans-serif" font-size="11" font-weight="700">1</text>
+          </svg>
+          <p class="figure-caption">Один чат = одна роль: здесь только планирование.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>2. Детали — в отдельных <a href="#gloss-chat" class="gloss-link">чатах</a> по задачам</h3>
+        <p>На каждую крупную задачу («черновик коммерческого предложения», «письмо в школу», «посты на неделю») лучше открыть <strong>новый <a href="#gloss-chat" class="gloss-link">чат</a></strong>. Так ответы не смешиваются с прошлыми темами.</p>
+        <div class="figure-block">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" fill="none" role="img" aria-label="Схема: блок плана и три отдельных блока задач">
+            <defs><marker id="m-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0l8 4-8 4z" fill="#2B2D42"/></marker></defs>
+            <rect width="400" height="220" rx="16" fill="#FFF8EE"/>
+            <rect x="30" y="70" width="100" height="70" rx="14" fill="#fff" stroke="#2B2D42" stroke-width="3"/>
+            <text x="80" y="105" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="11" font-weight="700">План</text>
+            <path d="M130 105h40" stroke="#2B2D42" stroke-width="3" marker-end="url(#m-arrow)"/>
+            <rect x="180" y="30" width="90" height="55" rx="12" fill="#E8F4F1" stroke="#2B2D42" stroke-width="2"/>
+            <text x="225" y="58" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="10" font-weight="600">Задача А</text>
+            <rect x="180" y="95" width="90" height="55" rx="12" fill="#E8F4F1" stroke="#2B2D42" stroke-width="2"/>
+            <text x="225" y="123" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="10" font-weight="600">Задача Б</text>
+            <rect x="180" y="160" width="90" height="55" rx="12" fill="#E8F4F1" stroke="#2B2D42" stroke-width="2"/>
+            <text x="225" y="188" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="10" font-weight="600">Задача В</text>
+            <path d="M170 105 L180 58M170 105 L180 123M170 105 L180 188" stroke="#2B2D42" stroke-width="2" fill="none"/>
+            <text x="300" y="115" fill="#2D6A4F" font-family="system-ui,sans-serif" font-size="12" font-weight="600">Новый чат</text>
+            <text x="300" y="135" fill="#2D6A4F" font-family="system-ui,sans-serif" font-size="12" font-weight="600">на каждую</text>
+          </svg>
+          <p class="figure-caption">От плана — отдельные ветки: новый чат на каждую большую задачу.</p>
+        </div>
+        <p class="note">Оставаться в одном длинном <a href="#gloss-chat" class="gloss-link">чате</a> на всё подряд можно, но качество ответов чаще падает. Новый <a href="#gloss-chat" class="gloss-link">чат</a> почти всегда проще.</p>
+      </div>
+
+      <div class="card">
+        <h3>3. Почему «всё в одну кучу» — плохо (простыми словами)</h3>
+        <p>Если в одном <a href="#gloss-chat" class="gloss-link">диалоге</a> смешать жалобы, личное, черновики разных тем и старые правки, <a href="#gloss-model" class="gloss-link">модель</a> начинает путаться — как на столе, где лежат все бумаги сразу. Ответы становятся хуже. Это иногда называют <em><a href="#gloss-poisoning" class="gloss-link">загрязнением контекста</a></em>: <a href="#gloss-chat" class="gloss-link">чат</a> «отравлен» лишним.</p>
+        <div class="figure-block">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 180" fill="none" role="img" aria-label="Сравнение: аккуратный блок с одной темой и перегруженный хаотичный блок">
+            <rect width="420" height="180" rx="16" fill="#FAFAFA"/>
+            <rect x="20" y="30" width="170" height="120" rx="16" fill="#E8F4F1" stroke="#2D6A4F" stroke-width="3"/>
+            <rect x="40" y="55" width="120" height="14" rx="4" fill="#2D6A4F" opacity=".3"/>
+            <rect x="40" y="78" width="90" height="10" rx="3" fill="#457B9D" opacity=".25"/>
+            <rect x="40" y="95" width="100" height="10" rx="3" fill="#457B9D" opacity=".25"/>
+            <text x="105" y="132" text-anchor="middle" fill="#2D6A4F" font-family="system-ui,sans-serif" font-size="12" font-weight="700">Одна тема</text>
+            <text x="210" y="98" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="20" font-weight="700">↔</text>
+            <rect x="230" y="30" width="170" height="120" rx="16" fill="#FFF0F0" stroke="#E63946" stroke-width="3"/>
+            <rect x="245" y="48" width="55" height="12" rx="2" fill="#E63946" opacity=".25" transform="rotate(-8 272 54)"/>
+            <rect x="280" y="65" width="70" height="10" rx="2" fill="#457B9D" opacity=".2" transform="rotate(5 315 70)"/>
+            <rect x="250" y="88" width="60" height="10" rx="2" fill="#F4A261" opacity=".35" transform="rotate(-12 280 93)"/>
+            <rect x="300" y="105" width="75" height="10" rx="2" fill="#457B9D" opacity=".2" transform="rotate(8 337 110)"/>
+            <text x="315" y="132" text-anchor="middle" fill="#C1121F" font-family="system-ui,sans-serif" font-size="11" font-weight="700">Всё в кучу</text>
+          </svg>
+          <p class="figure-caption">Слева — одна тема в <a href="#gloss-chat" class="gloss-link">чате</a>. Справа — всё подряд: так делать не стоит.</p>
+        </div>
+        <p><strong>Практика:</strong> одна тема на <a href="#gloss-chat" class="gloss-link">чат</a>; сменил тему — <strong>новый <a href="#gloss-chat" class="gloss-link">чат</a></strong>. Не подкладывай в <a href="#gloss-chat" class="gloss-link">диалог</a> устаревший «мусор» без нужды. Файлы в <strong><a href="#gloss-project" class="gloss-link">проекте</a></strong> (см. раздел <a href="#projects">«Проекты и источники»</a>) — не мусор: это заранее подготовленный фон, но каждую задачу всё равно лучше вести в <strong>отдельном <a href="#gloss-chat" class="gloss-link">чате</a></strong>.</p>
+      </div>
+
+      <div class="card" id="handoff-files">
+        <h3>4. Что сохранять и в каком виде — чтобы переносить между <a href="#gloss-chat" class="gloss-link">чатами</a> и <a href="#gloss-project" class="gloss-link">проектами</a></h3>
+        <p>Цель — не тащить за собой весь <a href="#gloss-chat" class="gloss-link">диалог</a>, а передавать <strong>сжатую правду</strong>: что решили, какие факты, что осталось сделать. В разрезе ChatGPT удобнее всего так:</p>
+        <ul>
+          <li><strong><a href="#gloss-markdown" class="gloss-link">Markdown</a> (.md)</strong> — лучший «рабочий» формат: заголовки, списки, <a href="#gloss-markdown" class="gloss-link">таблицы в markdown</a> читаются и тобой, и моделью предсказуемо. Ответ из чата с блоком кода можно сохранить как есть.</li>
+          <li><strong>Обычный текст (.txt)</strong> — тоже ок для коротких выжимок; без структуры длинные простыни хуже и для тебя, и для следующего <a href="#gloss-prompt" class="gloss-link">промпта</a>.</li>
+          <li><strong>Таблицы и факты</strong> — CSV или markdown-таблица; если считаешь в Excel / Google Таблицах, экспорт в CSV и краткий комментарий сверху в .md часто надёжнее, чем тяжёлый .xlsx только ради переноса.</li>
+          <li><strong>PDF и Word</strong> ChatGPT обычно умеет читать, но для «переноса сути» между <a href="#gloss-chat" class="gloss-link">чатами</a> быстрее набросать <strong>1–2 страницы выжимки в .md</strong>, чем гонять туда-сюда большие документы.</li>
+          <li><strong>Чего избегать:</strong> копировать в новый <a href="#gloss-chat" class="gloss-link">чат</a> десять экранов переписки — вместе с полезным прилетает шум и риск <a href="#gloss-poisoning" class="gloss-link">загрязнения контекста</a>. Сохраняй <strong>итог</strong>: цель, решения, открытые вопросы, ссылки на файлы у себя на диске или в <a href="#gloss-project" class="gloss-link">проекте</a>.</li>
+        </ul>
+        <p class="note">Если всё уже лежит в <a href="#gloss-sources" class="gloss-link">источниках проекта</a>, новому <a href="#gloss-chat" class="gloss-link">чату</a> чаще нужна одна строка-напоминание «опирайся на файлы проекта», а не дублирование всего содержимого.</p>
+      </div>
+
+      <div class="card" id="handoff-flow">
+        <h3>5. Поток переноса: план → задача → подзадача (без лишнего в <a href="#gloss-context" class="gloss-link">контексте</a>)</h3>
+        <p>Схема наглядная: в <strong>чате A</strong> держишь только общий план (например, день или неделю). Когда пора браться за первую крупную задачу — открываешь <strong>чат B</strong> и переносишь туда <strong>краткую выжимку</strong> из плана плюс формулировку задачи, а не весь лог A. Если внутри задачи попался тяжёлый кусок — заводишь <strong>чат C</strong> только под этот фрагмент; в B возвращаешь <strong>короткий итог</strong> (что сделали, что решили), чтобы не засорять B промежуточными пробами. Следующая крупная задача — снова <strong>новый чат</strong> (условно B₂), снова с опорой на файл/выжимку, а не на бесконечное наращивание одного <a href="#gloss-chat" class="gloss-link">диалога</a>.</p>
+        <div class="figure-block">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 548 292" fill="none" role="img" aria-label="Схема: чат A план дня, перенос выжимки в чат B задача, при необходимости чат C для подзадачи и краткий итог обратно в B, затем новый чат для следующей задачи">
+            <defs>
+              <marker id="m-handoff-arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0l8 4-8 4z" fill="#2B2D42"/></marker>
+            </defs>
+            <rect width="548" height="292" rx="16" fill="#FFF8EE"/>
+            <rect x="130" y="14" width="260" height="52" rx="12" fill="#ffffff" stroke="#2B2D42" stroke-width="2"/>
+            <text x="260" y="32" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="11" font-weight="700">
+              <tspan x="260" dy="0">Чат A — общий план</tspan>
+              <tspan x="260" dy="14">(день / неделя)</tspan>
+            </text>
+            <path d="M260 66v14" stroke="#2B2D42" stroke-width="2" marker-end="url(#m-handoff-arr)"/>
+            <text x="260" y="92" text-anchor="middle" fill="#5c617a" font-family="system-ui,sans-serif" font-size="9">
+              <tspan x="260" dy="0">сохраняешь выжимку: .md / заметка</tspan>
+              <tspan x="260" dy="11">не весь диалог</tspan>
+            </text>
+            <rect x="36" y="118" width="172" height="58" rx="12" fill="#E8F4F1" stroke="#2D6A4F" stroke-width="2"/>
+            <text x="122" y="138" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="11" font-weight="700">Чат B — задача 1</text>
+            <text x="122" y="154" text-anchor="middle" fill="#5c617a" font-family="system-ui,sans-serif" font-size="8.75">
+              <tspan x="122" dy="0">план по этой задаче</tspan>
+              <tspan x="122" dy="11">и работа здесь</tspan>
+            </text>
+            <path d="M208 147h129" stroke="#2B2D42" stroke-width="2" marker-end="url(#m-handoff-arr)"/>
+            <rect x="337" y="118" width="168" height="58" rx="12" fill="#FFF0F0" stroke="#E63946" stroke-width="2"/>
+            <text x="421" y="140" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="11" font-weight="700">Чат C</text>
+            <text x="421" y="158" text-anchor="middle" fill="#5c617a" font-family="system-ui,sans-serif" font-size="9">подзадача</text>
+            <text x="272" y="136" text-anchor="middle" fill="#5c617a" font-family="system-ui,sans-serif" font-size="8.25">сложный</text>
+            <text x="272" y="146" text-anchor="middle" fill="#5c617a" font-family="system-ui,sans-serif" font-size="8.25">фрагмент?</text>
+            <path d="M421 176v16H122v-16" stroke="#457B9D" stroke-width="2" stroke-dasharray="5 4" fill="none" marker-end="url(#m-handoff-arr)"/>
+            <text x="274" y="202" text-anchor="middle" fill="#457B9D" font-family="system-ui,sans-serif" font-size="8.75" font-weight="600">
+              <tspan x="274" dy="0">в B — только краткий</tspan>
+              <tspan x="274" dy="11">итог из C</tspan>
+            </text>
+            <path d="M122 176v28" stroke="#2B2D42" stroke-width="2" marker-end="url(#m-handoff-arr)"/>
+            <rect x="84" y="224" width="380" height="54" rx="10" fill="#ffffff" stroke="#2B2D42" stroke-width="2" stroke-dasharray="5 4"/>
+            <text x="274" y="246" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="10" font-weight="700">Следующая крупная задача</text>
+            <text x="274" y="262" text-anchor="middle" fill="#5c617a" font-family="system-ui,sans-serif" font-size="8.75">
+              <tspan x="274" dy="0">новый чат (B₂)</tspan>
+              <tspan x="274" dy="11">снова из выжимки или файла</tspan>
+            </text>
+          </svg>
+          <p class="figure-caption">Переносишь <strong>суть</strong>, а не историю кликов: A → кратко в B; при необходимости C → коротко обратно в B; дальше — снова чистый <a href="#gloss-chat" class="gloss-link">чат</a> под следующую задачу.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>6. Полезные приёмы в <a href="#gloss-prompt" class="gloss-link">промпте</a></h3>
+        <p>Ниже — короткие приёмы. У каждого есть кнопка «Копировать»: вставь текст в ChatGPT и подставь свои детали в квадратных скобках. Если работаешь внутри <a href="#gloss-project" class="gloss-link">проекта</a> с файлами, добавь в начало фразу вроде: «Учитывай <a href="#gloss-project-instructions" class="gloss-link">инструкцию проекта</a> и прикреплённые <a href="#gloss-sources" class="gloss-link">источники</a>» — шаблон есть в <a href="#prompts">библиотеке промптов</a>.</p>
+
+        <ol class="hack-list">
+          <li>
+            <span class="hack-num">1</span>
+            <div>
+              <strong>Роль и аудитория</strong>
+              <div class="prompt-block">
+                <pre id="prompt-hack-role">Ты помощник по деловой переписке. Пиши для [кого: например, партнёры спортивной федерации]. Тон: [формально / дружелюбно-деловой]. Задача: [одно предложение].</pre>
+                <div class="copy-row">
+                  <button type="button" class="copy-btn" data-copy-target="prompt-hack-role">Копировать</button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="hack-num">2</span>
+            <div>
+              <strong>Формат ответа</strong>
+              <div class="prompt-block">
+                <pre id="prompt-hack-format">Ответь в формате: [маркированный список / таблица с колонками … / письмо не длиннее 200 слов]. Без вступительных фраз вроде «конечно».</pre>
+                <div class="copy-row">
+                  <button type="button" class="copy-btn" data-copy-target="prompt-hack-format">Копировать</button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="hack-num">3</span>
+            <div>
+              <strong>Ограничения и честность</strong>
+              <div class="prompt-block">
+                <pre id="prompt-hack-honest">Не выдумывай факты. Если чего-то не знаешь — напиши [ПРОВЕРИТЬ]. Цифры и названия бери только из моего текста ниже.</pre>
+                <div class="copy-row">
+                  <button type="button" class="copy-btn" data-copy-target="prompt-hack-honest">Копировать</button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="hack-num">4</span>
+            <div>
+              <strong>Сначала структура, потом детали</strong>
+              <div class="prompt-block">
+                <pre id="prompt-hack-chain">Сначала дай план из 5 пунктов. Не расписывай пункты. Когда я напишу «раскрой пункт 3» — раскрой только его.</pre>
+                <div class="copy-row">
+                  <button type="button" class="copy-btn" data-copy-target="prompt-hack-chain">Копировать</button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="hack-num">5</span>
+            <div>
+              <strong>Пример стиля (<a href="#gloss-fewshot" class="gloss-link">few-shot</a>)</strong>
+              <div class="prompt-block">
+                <pre id="prompt-hack-few">Вот пример текста в нужном стиле:
+«…»
+
+Напиши новый текст на тему: [тема] в том же стиле и длине.</pre>
+                <div class="copy-row">
+                  <button type="button" class="copy-btn" data-copy-target="prompt-hack-few">Копировать</button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="hack-num">6</span>
+            <div>
+              <strong>Сначала вопросы к тебе</strong>
+              <div class="prompt-block">
+                <pre id="prompt-hack-ask">Перед ответом задай мне ровно 3 уточняющих вопроса. После моих ответов предложи готовый черновик.</pre>
+                <div class="copy-row">
+                  <button type="button" class="copy-btn" data-copy-target="prompt-hack-ask">Копировать</button>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="projects" aria-labelledby="projects-heading">
+      <h2 id="projects-heading" class="section-title"><span class="badge">Фишка</span> Проекты и источники</h2>
+
+      <p class="lead">В ChatGPT есть <strong><a href="#gloss-project" class="gloss-link">проекты</a></strong> (название может чуть отличаться в интерфейсе): это отдельная «папка» под одно направление работы. Внутри — твои <a href="#gloss-chat" class="gloss-link">чаты</a> и <strong><a href="#gloss-sources" class="gloss-link">файлы-источники</a></strong>, к которым <a href="#gloss-model" class="gloss-link">модель</a> может обращаться за <a href="#gloss-context" class="gloss-link">контекстом</a>. Это сильно упрощает жизнь, когда одни и те же документы нужны снова и снова.</p>
+
+      <div class="card">
+        <h3>Зачем <a href="#gloss-project" class="gloss-link">проект</a>, если уже есть «новый <a href="#gloss-chat" class="gloss-link">чат</a> на задачу»</h3>
+        <p><strong><a href="#gloss-chat" class="gloss-link">Чат</a></strong> — про одну конкретную задачу прямо сейчас. <strong><a href="#gloss-project" class="gloss-link">Проект</a></strong> — про стабильный контур: например «партнёры федерации» или «контент стадиона». В <a href="#gloss-project" class="gloss-link">проекте</a> лежат <strong><a href="#gloss-sources" class="gloss-link">источники</a></strong> (ТЗ, прошлое коммерческое, бренд-однострочник, календарь событий, шаблон письма), плюс можно задать <strong><a href="#gloss-project-instructions" class="gloss-link">инструкцию к проекту</a></strong> — тон, табу, как называть организацию.</p>
+        <p>Правило не отменяется: на каждую крупную задачу — <strong>новый <a href="#gloss-chat" class="gloss-link">чат</a> внутри <a href="#gloss-project" class="gloss-link">проекта</a></strong>. Так <a href="#gloss-chat" class="gloss-link">диалог</a> не превращается в свалку, а файлы не нужно каждый раз заново прикреплять.</p>
+        <div class="figure-block">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" fill="none" role="img" aria-label="Схема: папка проекта с документами и несколько отдельных чатов">
+            <rect width="400" height="200" rx="16" fill="#F5F0E8"/>
+            <rect x="24" y="28" width="168" height="148" rx="14" fill="#fff" stroke="#2B2D42" stroke-width="3"/>
+            <text x="108" y="58" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="12" font-weight="700">Проект</text>
+            <rect x="40" y="72" width="136" height="22" rx="4" fill="#E8F4F1" stroke="#2D6A4F" stroke-width="2"/>
+            <text x="108" y="87" text-anchor="middle" fill="#2D6A4F" font-family="system-ui,sans-serif" font-size="9" font-weight="600">инструкция</text>
+            <rect x="40" y="102" width="60" height="28" rx="4" fill="#FFF8EE" stroke="#2B2D42" stroke-width="2"/>
+            <text x="70" y="120" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="8">PDF</text>
+            <rect x="108" y="102" width="68" height="28" rx="4" fill="#FFF8EE" stroke="#2B2D42" stroke-width="2"/>
+            <text x="142" y="120" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="8">календарь</text>
+            <text x="108" y="168" text-anchor="middle" fill="#5c617a" font-family="system-ui,sans-serif" font-size="10">файлы-источники</text>
+            <path d="M200 100h32" stroke="#2B2D42" stroke-width="2"/>
+            <polygon points="232,100 224,96 224,104" fill="#2B2D42"/>
+            <rect x="248" y="32" width="128" height="44" rx="10" fill="#E8F4F1" stroke="#2B2D42" stroke-width="2"/>
+            <text x="312" y="58" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="10" font-weight="600">Чат: КП</text>
+            <rect x="248" y="86" width="128" height="44" rx="10" fill="#E8F4F1" stroke="#2B2D42" stroke-width="2"/>
+            <text x="312" y="112" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="10" font-weight="600">Чат: посты</text>
+            <rect x="248" y="140" width="128" height="44" rx="10" fill="#E8F4F1" stroke="#2B2D42" stroke-width="2"/>
+            <text x="312" y="166" text-anchor="middle" fill="#2B2D42" font-family="system-ui,sans-serif" font-size="10" font-weight="600">Чат: письмо</text>
+          </svg>
+          <p class="figure-caption"><a href="#gloss-project" class="gloss-link">Проект</a> хранит фон; каждый <a href="#gloss-chat" class="gloss-link">чат</a> — отдельная задача.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Что положить в <a href="#gloss-sources" class="gloss-link">источники</a></h3>
+        <ul>
+          <li><strong>Образец</strong> уже удачного письма или КП — чтобы повторять структуру и тон.</li>
+          <li><strong>Факты в одном месте</strong>: кратко о федерации/стадионе, официальное название, ссылки — чтобы не путаться в формулировках.</li>
+          <li><strong>Календарь или список событий</strong> — для контент-плана; обновляй файл, когда даты меняются.</li>
+          <li><strong>Шаблон таблицы</strong> (хоть в виде текста): колонки для отбора партнёров, чтобы каждый раз не объяснять с нуля.</li>
+        </ul>
+        <p class="note">Имя файла делай говорящим: не «документ1.pdf», а <code>КП_образец_федерация.pdf</code> — тебе и <a href="#gloss-model" class="gloss-link">модели</a> проще ориентироваться.</p>
+      </div>
+
+      <div class="card">
+        <h3>Как просить опереться на <a href="#gloss-sources" class="gloss-link">источники</a></h3>
+        <p>В начале <a href="#gloss-chat" class="gloss-link">чата</a> внутри <a href="#gloss-project" class="gloss-link">проекта</a> одной строкой напомни: что ответ должен учитывать <a href="#gloss-project-instructions" class="gloss-link">инструкцию проекта</a> и прикреплённые файлы; если чего-то нет в <a href="#gloss-sources" class="gloss-link">источниках</a> — пусть напишет <strong>[ПРОВЕРИТЬ]</strong>, а не придумает. Готовые формулировки — в <a href="#prompts">библиотеке</a>.</p>
+      </div>
+
+      <div class="card">
+        <h3>Если <a href="#gloss-project" class="gloss-link">проектов</a> в интерфейсе нет или тариф простой</h3>
+        <p>Прикрепляй нужные файлы <strong>к конкретному <a href="#gloss-chat" class="gloss-link">чату</a></strong> на эту задачу (кнопка вложения / «+»). Не смешивай в одном <a href="#gloss-chat" class="gloss-link">чате</a> десять разных тем — лучше новый <a href="#gloss-chat" class="gloss-link">чат</a> и снова нужные файлы, чем один бесконечный <a href="#gloss-chat" class="gloss-link">диалог</a>.</p>
+      </div>
+
+      <div class="card">
+        <h3>Обновляй и чисти</h3>
+        <p>Устаревший календарь или старый КП в <a href="#gloss-sources" class="gloss-link">источниках</a> хуже, чем их отсутствие: <a href="#gloss-model" class="gloss-link">модель</a> будет опираться на неправду. Раз в сезон пересмотри файлы в <a href="#gloss-project" class="gloss-link">проекте</a>: удали лишнее, замени версии.</p>
+      </div>
+    </section>
+
+    <section id="scenarios" aria-labelledby="scenarios-heading">
+      <h2 id="scenarios-heading" class="section-title"><span class="badge">Практика</span> Сценарии работы</h2>
+
+      <p class="lead">Ниже — типичные задачи. В каждом сценарии открой <strong>новый <a href="#gloss-chat" class="gloss-link">чат</a></strong> под задачу (лучше внутри <a href="#gloss-project" class="gloss-link">проекта</a> ChatGPT по теме — см. <a href="#projects">«Проекты и источники»</a>, если функция доступна). Раскрывай блоки по очереди.</p>
+
+      <div class="scenario-grid" aria-hidden="true">
+        <div class="scenario-card">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" aria-hidden="true"><rect x="12" y="16" width="56" height="52" rx="8" fill="#FFF8EE" stroke="#2B2D42" stroke-width="3"/><path d="M22 32h36M22 44h28M22 56h32" stroke="#457B9D" stroke-width="3" stroke-linecap="round"/><circle cx="40" cy="68" r="4" fill="#2D6A4F"/></svg>
+          <div><h3>Коммерческие предложения</h3><p>Структура и формулировки для партнёров.</p></div>
+        </div>
+        <div class="scenario-card">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" aria-hidden="true"><circle cx="34" cy="34" r="18" fill="#E8F4F1" stroke="#2B2D42" stroke-width="3"/><path d="M48 48l16 16" stroke="#2B2D42" stroke-width="4" stroke-linecap="round"/><circle cx="34" cy="34" r="8" fill="#F4A261" opacity=".5"/></svg>
+          <div><h3>Кому писать</h3><p>Идеи ниш и критерии отбора.</p></div>
+        </div>
+        <div class="scenario-card">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" aria-hidden="true"><rect x="14" y="22" width="52" height="40" rx="8" fill="#FFF8EE" stroke="#2B2D42" stroke-width="3"/><circle cx="28" cy="42" r="6" fill="#457B9D"/><path d="M38 46c4-6 12-6 16 0" stroke="#2D6A4F" stroke-width="3" stroke-linecap="round"/><rect x="22" y="58" width="36" height="6" rx="2" fill="#FFD166"/></svg>
+          <div><h3>Соцсети и календарь</h3><p>События и рубрики.</p></div>
+        </div>
+        <div class="scenario-card">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M40 12L8 28l32 16 32-16-32-16z" fill="#E8F4F1" stroke="#2B2D42" stroke-width="3" stroke-linejoin="round"/><path d="M16 32v28l24 12 24-12V32" stroke="#2B2D42" stroke-width="3" fill="none"/><rect x="34" y="44" width="12" height="16" fill="#F4A261" stroke="#2B2D42" stroke-width="2"/></svg>
+          <div><h3>Школы и согласования</h3><p>Письма о мероприятиях и публикациях.</p></div>
+        </div>
+        <div class="scenario-card">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" aria-hidden="true"><rect x="10" y="24" width="60" height="40" rx="6" fill="#fff" stroke="#2B2D42" stroke-width="3"/><path d="M10 28l30 22 30-22" stroke="#457B9D" stroke-width="3" fill="none"/></svg>
+          <div><h3>Email и звонок</h3><p>Каналы связи.</p></div>
+        </div>
+        <div class="scenario-card">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" aria-hidden="true"><circle cx="40" cy="38" r="22" fill="#FFD166" stroke="#2B2D42" stroke-width="3"/><path d="M30 36h4M46 36h4" stroke="#2B2D42" stroke-width="3" stroke-linecap="round"/><path d="M32 48c4 4 12 4 16 0" stroke="#2B2D42" stroke-width="3" stroke-linecap="round"/><text x="40" y="78" text-anchor="middle" fill="#457B9D" font-family="system-ui,sans-serif" font-size="10" font-weight="700">5 мин</text></svg>
+          <div><h3>Когда лень</h3><p>Микро-шаги.</p></div>
+        </div>
+      </div>
+
+      <details class="accordion" open>
+        <summary>Коммерческое предложение для поиска партнёров</summary>
+        <div class="accordion-body">
+          <p class="note"><strong>Проект и файлы:</strong> заведи <a href="#gloss-project" class="gloss-link">проект</a> вроде «КП — партнёры» и положи в <a href="#gloss-sources" class="gloss-link">источники</a> удачный старый КП, краткое ТЗ и факты о федерации. Тогда в каждом новом <a href="#gloss-chat" class="gloss-link">чате</a> не нужно заново вставлять простыню — напомни в начале: «опирайся на файлы <a href="#gloss-project" class="gloss-link">проекта</a>» (готовая фраза в <a href="#prompts">библиотеке</a>).</p>
+          <p>Собери в новом <a href="#gloss-chat" class="gloss-link">чате</a>: цели партнёрства, аудитория, что ты предлагаешь, сроки, контакты. Если <a href="#gloss-project" class="gloss-link">проекта</a> ещё нет — прикрепи к <a href="#gloss-chat" class="gloss-link">чату</a> старый образец или ТЗ.</p>
+          <p>Попроси: оглавление, затем разделы по очереди. Перед отправкой проверь цифры и юридические формулировки сам или с коллегой.</p>
+          <div class="prompt-block">
+            <pre id="prompt-sc-kp">Ты помогаешь готовить коммерческое предложение для [тип организации: спортивная федерация / стадион / другое].
+
+Контекст (только факты, без выдумок):
+- Продукт/услуга: …
+- Цель партнёрства: …
+- Аудитория партнёра: …
+
+Сделай:
+1) Структуру документа из разделов с подзаголовками.
+2) Черновик вводного абзаца и раздела «что мы предлагаем» в [формальном / дружелюбном] тоне.
+Помечай неизвестные факты как [ПРОВЕРИТЬ].</pre>
+            <div class="copy-row">
+              <button type="button" class="copy-btn" data-copy-target="prompt-sc-kp">Копировать</button>
+            </div>
+          </div>
+          <p class="note"><strong>Чек перед отправкой:</strong> реквизиты, ссылки, имена, суммы — по твоим данным; <a href="#gloss-model" class="gloss-link">нейросеть</a> может ошибиться.</p>
+        </div>
+      </details>
+
+      <details class="accordion">
+        <summary>Кому отправлять: поиск потенциальных партнёров</summary>
+        <div class="accordion-body">
+          <p class="note"><strong>Проект и файлы:</strong> в том же <a href="#gloss-project" class="gloss-link">проекте</a>, что и КП, держи один файл «о федерации / продукте в двух абзацах» — чтобы в этом сценарии не перепечатывать <a href="#gloss-context" class="gloss-link">контекст</a>. После отбора ниш можно вести отдельный <a href="#gloss-chat" class="gloss-link">чат</a> в <a href="#gloss-project" class="gloss-link">проекте</a> на каждую волну рассылки.</p>
+          <p>Попроси список <strong>типов компаний и ниш</strong>, которые логично связаны с твоим делом (организацией), и критерии отбора. Затем — таблицу для Excel или Google Таблиц: колонки «тип», «почему подходит», «что проверить на сайте».</p>
+          <p>Реальные названия компаний, email и телефоны <a href="#gloss-model" class="gloss-link">нейросеть</a> может <strong>придумать или устареть</strong> — всегда проверяй на сайте и в реестрах.</p>
+          <div class="prompt-block">
+            <pre id="prompt-sc-partners">Инициатива / о чём речь: [кратко]. Регион: […].
+
+Задача: предложи 12 типов организаций/ниш, которым может быть интересно партнёрство, и для каждой:
+- почему это логично;
+- что искать на сайте (2–3 пункта);
+- красные флаги (когда не подходит).
+
+Затем сделай таблицу (markdown) с колонками: тип | обоснование | что проверить | красные флаги.
+
+Не придумывай названия компаний и контакты — только типы и критерии.</pre>
+            <div class="copy-row">
+              <button type="button" class="copy-btn" data-copy-target="prompt-sc-partners">Копировать</button>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="accordion">
+        <summary>Стадион: соцсети и контент-план</summary>
+        <div class="accordion-body">
+          <p class="note"><strong>Проект и файлы:</strong> <a href="#gloss-project" class="gloss-link">проект</a> «Стадион — соцсети» + в <a href="#gloss-sources" class="gloss-link">источниках</a> актуальный файл-календарь событий (обновляй при изменениях). Тогда контент-план строится от реальных дат, а не от памяти. Один <a href="#gloss-chat" class="gloss-link">чат</a> — одна неделя или один месяц плана, чтобы не мешать черновики разных периодов.</p>
+          <p>Передай список дат и названий событий (как есть). Попроси контент-план: рубрики, частота постов, идеи форматов (пост, сторис, карусель). Пусть спорные факты будут помечены <strong>[нужно подтвердить]</strong>.</p>
+          <div class="prompt-block">
+            <pre id="prompt-sc-social">Ты SMM-ассистент. Площадка: [стадион / спортобъект]. Аудитория: [кого хотим привлечь].
+
+Список событий (факты только из списка):
+[вставь список дат и событий]
+
+Сделай:
+1) Таблицу на [4 недели]: дата | тема | формат | идея текста | что снять/сфотографировать.
+2) 5 постоянных рубрик для будних дней.
+3) Пометку [нужно подтвердить] там, где не хватает данных.
+
+Не придумывай события, которых нет в списке.</pre>
+            <div class="copy-row">
+              <button type="button" class="copy-btn" data-copy-target="prompt-sc-social">Копировать</button>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="accordion">
+        <summary>Школы: договорённости и разрешения на публикации</summary>
+        <div class="accordion-body">
+          <p class="note"><strong>Проект и файлы:</strong> положи в <a href="#gloss-project" class="gloss-link">проект</a> стадиона шаблон письма в школу или прошлую успешную переписку — <a href="#gloss-model" class="gloss-link">модель</a> повторит структуру. <a href="#gloss-project-instructions" class="gloss-link">Инструкцию к проекту</a> дополни: как называть площадку и в каком ключе (официально / тепло).</p>
+          <p>Нужно вежливое письмо: запрос информации о мероприятиях, возможность присутствовать для контента, согласие на публикации в соцсетях объекта. Попроси 2–3 варианта тона и короткий текст для напоминания через неделю.</p>
+          <div class="prompt-block">
+            <pre id="prompt-sc-school">Напиши деловое письмо на email руководителю спортивной школы.
+
+Цель:
+- попросить регулярно присылать или согласовать календарь мероприятий;
+- запросить возможность присутствовать на выбранных мероприятиях для материалов;
+- запросить письменное согласие на публикации фото/видео в соцсетях [название площадки] с формулировкой про отзыв согласия.
+
+Тон: уважительный, без давления. Длина: до 200 слов. В конце — одна строка темы письма (subject).</pre>
+            <div class="copy-row">
+              <button type="button" class="copy-btn" data-copy-target="prompt-sc-school">Копировать</button>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="accordion">
+        <summary>Каналы: email и звонок</summary>
+        <div class="accordion-body">
+          <p class="note"><strong>Проект и файлы:</strong> в <a href="#gloss-project-instructions" class="gloss-link">инструкции к проекту</a> пропиши, как ты представляешься и как называешь организацию — это попадёт и в черновики писем, и в скрипт звонка. Презентацию или one-pager для партнёра тоже можно держать файлом-<a href="#gloss-sources" class="gloss-link">источником</a> в том же <a href="#gloss-project" class="gloss-link">проекте</a>.</p>
+          <p><strong>Email</strong> — основной канал для первых касаний: можно приложить PDF, перечитать перед отправкой.</p>
+          <p><strong>Звонок</strong> — короткий скрипт помогает не забыть цель звонка. Попроси «если ответили / если секретарь / если просят прислать на почту».</p>
+          <div class="prompt-block">
+            <pre id="prompt-sc-call">Сделай короткий скрипт телефонного звонка: цель — [назначить встречу / уточнить контакт / …].
+
+Включи:
+- вступление 15 секунд;
+- 2 варианта, если попросили отправить материалы на email;
+- вежливое завершение.
+
+Без агрессивных продаж, длина всего скрипта — до 1 минуты речи.</pre>
+            <div class="copy-row">
+              <button type="button" class="copy-btn" data-copy-target="prompt-sc-call">Копировать</button>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="accordion">
+        <summary>Когда совсем не хочется: микро-шаги</summary>
+        <div class="accordion-body">
+          <p class="note"><strong><a href="#gloss-project" class="gloss-link">Проекты</a> здесь не обязательны</strong> — сначала просто открой <a href="#gloss-chat" class="gloss-link">чат</a>. Если замечаешь, что каждый раз вставляешь одно и то же о себе и задаче, вынеси это в <a href="#gloss-project-instructions" class="gloss-link">инструкцию проекта</a> (<a href="#projects">раздел про проекты</a>) и перестань сражаться с пустым полем.</p>
+          <p>Не обязательно делать всё за раз. Хватит <strong>5 минут</strong>: открой новый <a href="#gloss-chat" class="gloss-link">чат</a> и попроси только план из трёх пунктов или только тему письма.</p>
+          <p>Черновик в <a href="#gloss-model" class="gloss-link">нейросети</a> — это уже не ноль; править готовое проще, чем писать с нуля.</p>
+          <div class="prompt-block">
+            <pre id="prompt-sc-micro">У меня сегодня мало сил. Задача: [опиши одной фразой].
+
+Дай только три самых маленьких шага на сегодня, каждый не дольше 15 минут. Без мотивационных речей.</pre>
+            <div class="copy-row">
+              <button type="button" class="copy-btn" data-copy-target="prompt-sc-micro">Копировать</button>
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section id="prompts" aria-labelledby="prompts-heading">
+      <h2 id="prompts-heading" class="section-title"><span class="badge">Библиотека</span> Промпты на копирование</h2>
+      <p class="lead">Собраны в одном месте — те же идеи, что выше по странице, плюс универсальные заготовки. Блоки про <strong><a href="#gloss-project" class="gloss-link">проект</a></strong> удобно вставлять первой строкой в <a href="#gloss-chat" class="gloss-link">чате</a> внутри соответствующего <a href="#gloss-project" class="gloss-link">проекта</a> ChatGPT.</p>
+
+      <div class="prompt-library">
+        <div class="card">
+          <h3>Новый <a href="#gloss-chat" class="gloss-link">чат</a> и роль</h3>
+          <div class="prompt-block">
+            <pre id="lib-newchat">Я начинаю новую задачу. Тема только одна: […]. Игнорируй всё, что не относится к этой теме. Если нужны уточнения — задай до 3 вопросов.</pre>
+            <div class="copy-row">
+              <button type="button" class="copy-btn" data-copy-target="lib-newchat">Копировать</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Учитывай <a href="#gloss-project" class="gloss-link">проект</a> и <a href="#gloss-sources" class="gloss-link">источники</a></h3>
+          <div class="prompt-block">
+            <pre id="lib-project-context">Работаем внутри моего проекта в ChatGPT. Учитывай инструкцию проекта и файлы-источники, которые там прикреплены. Если факта нет в этих файлах и в моём сообщении ниже — не выдумывай, поставь [ПРОВЕРИТЬ].
+
+Моя задача сейчас: [одно предложение].</pre>
+            <div class="copy-row">
+              <button type="button" class="copy-btn" data-copy-target="lib-project-context">Копировать</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Какой файл смотреть (<a href="#gloss-sources" class="gloss-link">источники</a>)</h3>
+          <div class="prompt-block">
+            <pre id="lib-project-whichfile">В этом проекте для этой задачи релевантны файлы: [перечисли имена или тип: образец КП / календарь / …]. Опирайся в первую очередь на них; остальное — из моего текста ниже.
+
+[твой текст или список фактов]</pre>
+            <div class="copy-row">
+              <button type="button" class="copy-btn" data-copy-target="lib-project-whichfile">Копировать</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Таблица в <a href="#gloss-markdown" class="gloss-link">markdown</a> для переноса в Excel</h3>
+          <div class="prompt-block">
+            <pre id="lib-table">Сделай таблицу в формате markdown с колонками: [перечисли]. Строки: [что заполнить]. Без пояснений вне таблицы.</pre>
+            <div class="copy-row">
+              <button type="button" class="copy-btn" data-copy-target="lib-table">Копировать</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Письмо: коротко и по делу</h3>
+          <div class="prompt-block">
+            <pre id="lib-email">Черновик email. Кому по смыслу: […]. Цель письма: […]. Факты: [список]. Длина до 150 слов. Тема письма (subject) отдельной строкой в начале.</pre>
+            <div class="copy-row">
+              <button type="button" class="copy-btn" data-copy-target="lib-email">Копировать</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Сократить и упростить текст</h3>
+          <div class="prompt-block">
+            <pre id="lib-short">Сократи текст ниже на 30%, убери канцелярит, сохрани смысл. Если что-то неясно — пометь [ПРОВЕРИТЬ].
+
+Текст:
+«…»</pre>
+            <div class="copy-row">
+              <button type="button" class="copy-btn" data-copy-target="lib-short">Копировать</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="glossary" class="glossary" aria-labelledby="glossary-heading">
+      <h2 id="glossary-heading" class="section-title"><span class="badge">Слова</span> Глоссарий</h2>
+      <p class="lead">Коротко: что имеют в виду те, кто говорит про ChatGPT и похожие сервисы. Можно возвращаться сюда, когда встречаешь термин в тексте выше.</p>
+
+      <div class="card">
+        <dl>
+          <dt id="gloss-context"><a href="#gloss-context" class="gloss-link">Контекст</a></dt>
+          <dd>Всё, что модель «помнит» в рамках <strong>одного чата</strong>, чтобы ответить: твои сообщения, её прошлые ответы, иногда прикреплённые файлы. Это не вечная память: в другом чате контекст другой. Если в одном диалоге намешано много разных тем, контекст становится шумным — ответы хуже. Отсюда правило: <strong>одна задача — по возможности новый чат</strong>.</dd>
+
+          <dt id="gloss-prompt"><a href="#gloss-prompt" class="gloss-link">Промпт</a></dt>
+          <dd>Твоё сообщение модели: что сделать, в каком тоне, в каком формате. Чем яснее промпт, тем меньше додумываний. Готовые куски текста для копирования на этой странице — тоже промпты.</dd>
+
+          <dt id="gloss-model"><a href="#gloss-model" class="gloss-link">Модель / нейросеть (в этом смысле)</a></dt>
+          <dd>Программа, которая по тексту на входе подбирает текст на выходе. Не «думает» как человек: угадывает продолжение по шаблонам из обучения. Поэтому факты и цифры нужно <strong>проверять</strong>, особенно если их не было в твоём промпте или в файлах.</dd>
+
+          <dt id="gloss-chat"><a href="#gloss-chat" class="gloss-link">Чат, сессия, диалог</a></dt>
+          <dd>Одна цепочка сообщений с кнопкой «новый чат» сбоку. Новый чат = чистый лист: контекст не тянется из прошлого диалога (если только ты сам не работаешь внутри <a href="#gloss-project" class="gloss-link">проекта</a> с общими файлами).</dd>
+
+          <dt id="gloss-project"><a href="#gloss-project" class="gloss-link">Проект (в ChatGPT)</a></dt>
+          <dd>«Папка» для одного направления работы: внутри — отдельные чаты и <a href="#gloss-sources" class="gloss-link">файлы-источники</a>, плюс может быть <a href="#gloss-project-instructions" class="gloss-link">инструкция к проекту</a>. Удобно, чтобы не вставлять одни и те же документы в каждый новый разговор.</dd>
+
+          <dt id="gloss-sources"><a href="#gloss-sources" class="gloss-link">Источники, файлы в проекте</a></dt>
+          <dd>Загруженные PDF, документы и т.п., к которым модель может обращаться в чатах этого проекта. Не магия: если файла нет или он устарел, опора на него бесполезна или вредна — обновляй.</dd>
+
+          <dt id="gloss-project-instructions"><a href="#gloss-project-instructions" class="gloss-link">Инструкция к проекту</a></dt>
+          <dd>Короткий текст в настройках проекта: кто ты, как писать, как называть организацию, чего не делать. Подмешивается к ответам внутри проекта. Не заменяет здравый смысл и проверку фактов.</dd>
+
+          <dt id="gloss-poisoning"><a href="#gloss-poisoning" class="gloss-link">Загрязнение контекста</a></dt>
+          <dd>Когда в одном чате слишком много разного (жалобы, личное, черновики разных задач), модель хуже попадает в цель — как стол, заваленный бумагами. Лечится: <strong>новый чат</strong> на новую тему и аккуратный <a href="#gloss-prompt" class="gloss-link">промпт</a>.</dd>
+
+          <dt id="gloss-fewshot"><a href="#gloss-fewshot" class="gloss-link">Пример в стиле (few-shot)</a></dt>
+          <dd>Приём: ты показываешь кусок текста «как надо» и просишь написать новое в том же духе. «Few-shot» — жаргон разработчиков; по смыслу это просто <strong>образец</strong>.</dd>
+
+          <dt id="gloss-markdown"><a href="#gloss-markdown" class="gloss-link">Markdown</a></dt>
+          <dd>Разметка текста: заголовки, списки, таблицы простыми символами. ChatGPT часто отдаёт таблицы в markdown — их можно вставить в редактор или конвертер и перенести в Excel / Google Таблицы.</dd>
+
+          <dt id="gloss-localstorage"><a href="#gloss-localstorage" class="gloss-link">localStorage</a> (про чеклист на этой странице)</dt>
+          <dd>Хранилище в твоём браузере: галочки чеклиста сохраняются на этом устройстве. С телефона или другого компьютера список будет пустым — это нормально.</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section id="checklist" aria-labelledby="check-heading">
+      <h2 id="check-heading" class="section-title"><span class="badge">Сохраняется</span> Чеклист привычек</h2>
+      <p class="lead">Отметки хранятся в этом браузере (<a href="#gloss-localstorage" class="gloss-link">localStorage</a>). С другого устройства список будет пустым.</p>
+
+      <div class="card">
+        <ul class="checklist">
+          <li>
+            <input type="checkbox" id="c1" data-check-id="c1">
+            <label for="c1">Завожу отдельный <a href="#gloss-chat" class="gloss-link">чат</a> для плана на неделю или месяц</label>
+          </li>
+          <li>
+            <input type="checkbox" id="c2" data-check-id="c2">
+            <label for="c2">Открываю новый <a href="#gloss-chat" class="gloss-link">чат</a> на каждую крупную задачу (КП, письмо в школу, контент-план)</label>
+          </li>
+          <li>
+            <input type="checkbox" id="c3" data-check-id="c3">
+            <label for="c3">Не смешиваю личное и рабочее в одном <a href="#gloss-chat" class="gloss-link">диалоге</a></label>
+          </li>
+          <li>
+            <input type="checkbox" id="c4" data-check-id="c4">
+            <label for="c4">В <a href="#gloss-prompt" class="gloss-link">промпте</a> указываю роль, формат ответа и ограничения</label>
+          </li>
+          <li>
+            <input type="checkbox" id="c5" data-check-id="c5">
+            <label for="c5">Прошу помечать неизвестное как [ПРОВЕРИТЬ] или [нужно подтвердить]</label>
+          </li>
+          <li>
+            <input type="checkbox" id="c6" data-check-id="c6">
+            <label for="c6">Проверяю факты, цифры и контакты перед отправкой письма</label>
+          </li>
+          <li>
+            <input type="checkbox" id="c9" data-check-id="c9">
+            <label for="c9">Веду отдельные ChatGPT-<a href="#gloss-project" class="gloss-link">проекты</a> под разные направления (или один — но с понятной структурой файлов)</label>
+          </li>
+          <li>
+            <input type="checkbox" id="c10" data-check-id="c10">
+            <label for="c10">Держу в <a href="#gloss-project" class="gloss-link">проекте</a> актуальные <a href="#gloss-sources" class="gloss-link">файлы-источники</a> и обновляю их, когда данные меняются</label>
+          </li>
+          <li>
+            <input type="checkbox" id="c8" data-check-id="c8">
+            <label for="c8">Делаю хотя бы один микро-шаг, когда «не хочется»</label>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <p class="note warning" style="margin-top:2rem;">
+      <strong>Напоминание:</strong> ChatGPT и похожие сервисы могут ошибаться, в том числе в фактах и ссылках. <a href="#gloss-model" class="gloss-link">Модель</a> не оракул — используй выводы как черновик, а не как истину последней инстанции.
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Всё в одном файле: скачай <code>index.html</code>, открой двойным щелчком или выложи на GitHub Pages — внешние скрипты и картинки не нужны.</p>
+  </footer>
+
+  <button type="button" id="doc-back-btn" class="doc-back-btn" hidden aria-label="Вернуться к месту чтения">← Назад</button>
+
+  <script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "ai-guide-checklist-v1";
+  var DOC_BACK_KEY = "ira-doc-nav-back-v1";
+
+  function getDocBackState() {
+    try {
+      var raw = sessionStorage.getItem(DOC_BACK_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setDocBackState(scroll, hash, targetId) {
+    try {
+      sessionStorage.setItem(
+        DOC_BACK_KEY,
+        JSON.stringify({ scroll: scroll, hash: hash || "", target: targetId })
+      );
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function clearDocBackState() {
+    try {
+      sessionStorage.removeItem(DOC_BACK_KEY);
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function updateDocBackButton() {
+    var btn = document.getElementById("doc-back-btn");
+    if (!btn) return;
+    var state = getDocBackState();
+    var cur = (location.hash || "").replace(/^#/, "");
+    btn.hidden = !(state && state.target && cur === state.target);
+  }
+
+  function initDocBackNav() {
+    document.addEventListener(
+      "click",
+      function (e) {
+        var a = e.target.closest && e.target.closest('a[href^="#"]');
+        if (!a || a.getAttribute("href") === "#") return;
+        var href = a.getAttribute("href");
+        if (!href || href.length < 2) return;
+        var targetId = href.slice(1);
+        if (!targetId) return;
+        var cur = (location.hash || "").replace(/^#/, "");
+        if (cur === targetId) return;
+        setDocBackState(window.scrollY, location.hash || "", targetId);
+      },
+      true
+    );
+
+    var btn = document.getElementById("doc-back-btn");
+    if (btn) {
+      btn.addEventListener("click", function () {
+        var state = getDocBackState();
+        if (!state) return;
+        clearDocBackState();
+        var path = location.pathname + location.search;
+        if (state.hash) {
+          history.replaceState(null, "", path + state.hash);
+        } else {
+          history.replaceState(null, "", path);
+        }
+        requestAnimationFrame(function () {
+          window.scrollTo({ top: state.scroll, left: 0, behavior: "auto" });
+          setTimeout(function () {
+            window.scrollTo({ top: state.scroll, left: 0, behavior: "auto" });
+          }, 50);
+        });
+        updateDocBackButton();
+      });
+    }
+
+    window.addEventListener("hashchange", updateDocBackButton);
+    updateDocBackButton();
+  }
+
+  function initCopyButtons() {
+    document.querySelectorAll("[data-copy-target]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-copy-target");
+        var el = id ? document.getElementById(id) : null;
+        if (!el) return;
+        var text = el.textContent || "";
+        copyText(text, btn);
+      });
+    });
+  }
+
+  function copyText(text, btn) {
+    function done() {
+      var prev = btn.textContent;
+      btn.textContent = "Скопировано!";
+      btn.classList.add("copied");
+      setTimeout(function () {
+        btn.textContent = prev;
+        btn.classList.remove("copied");
+      }, 1600);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+      fallback();
+    }
+
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        done();
+      } catch (e) {
+        btn.textContent = "Не вышло — выдели текст";
+      }
+      document.body.removeChild(ta);
+    }
+  }
+
+  function loadChecklistState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveChecklistState(state) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      /* ignore quota */
+    }
+  }
+
+  function initChecklist() {
+    var state = loadChecklistState();
+    document.querySelectorAll('input[type="checkbox"][data-check-id]').forEach(function (input) {
+      var id = input.getAttribute("data-check-id");
+      if (state[id]) input.checked = true;
+      input.addEventListener("change", function () {
+        var s = loadChecklistState();
+        if (input.checked) s[id] = true;
+        else delete s[id];
+        saveChecklistState(s);
+      });
+    });
+  }
+
+  initCopyButtons();
+  initChecklist();
+  initDocBackNav();
+})();
+  </script>
+</body>
+</html>
